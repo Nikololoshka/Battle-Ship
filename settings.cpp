@@ -18,7 +18,7 @@ void Settings::save()
 
 QRectF Settings::sceneSize() const
 {
-    return QRectF(0, 0, 1000, 1000);
+    return QRectF(0, 0, 800, 600);
 }
 
 Settings::Settings()
