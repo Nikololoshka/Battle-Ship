@@ -3,12 +3,15 @@
 
 #include <QtWidgets>
 
+const int MAP_SIZE = 10;
+
 class Settings
 {
 public:
     static Settings &instance();
     void load();
     void save();
+    QVector<int> shipsLength();
     QRectF sceneSize() const;
 private:
     Settings();

@@ -6,21 +6,26 @@
 class Ship
 {
 public:
-    Ship(int mainX, int mainY, bool isHor, int length);
-    void shot(int x, int y);
+    enum Status {
+        Life,
+        Hit,
+        Destroyed
+    };
+    Ship(int length);
+    Status shot(int x, int y);
+    void addCell(int id, int x, int y);
+    void reset();
     bool isLife() const;
+    int length() const;
 
 private:
     struct CellShip
     {
         int x;
         int y;
-        bool isLife;
+        Status status;
     };
 
-    int mainX_;
-    int mainY_;
-    bool isHor_;
     int length_;
     QVector<CellShip> body_;
 };

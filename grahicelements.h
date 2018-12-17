@@ -2,6 +2,7 @@
 #define GRAHICELEMENTS_H
 
 #include <QtWidgets>
+#include "settings.h"
 #include "ship.h"
 
 class MenuButton : public QGraphicsObject
@@ -9,7 +10,7 @@ class MenuButton : public QGraphicsObject
     Q_OBJECT
 
 public:
-    enum class ButtonType {
+    enum ButtonType {
         Standart,
         Disable
     };
@@ -42,16 +43,20 @@ class Cell : public QGraphicsObject
     Q_OBJECT
 
 public:
-    enum class Status {
+    enum Status {
+        Empty,
+        NearbyShip,
         Life,
         Hit,
         Destroyed,
         Miss,
-        Disable
     };
 
-    Cell(double x, double y, int w, int h, int id, Status status = Status::Life);
-    void shot();
+    Cell(double x, double y, int w, int h, int id, bool disable = false);
+    Ship::Status shot(int x, int y);
+    Status status() const;
+    void setStatus(Status stat);
+    void setShip(Ship *ship);
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
@@ -68,8 +73,52 @@ private:
     int height_;
     int id_;
     bool hover_;
+    bool disable_;
     Status status_;
-    //Ship *ship_;
+    Ship *ship_;
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+
+class TextCell : public QGraphicsItem
+{
+public:
+    TextCell(double x, double y, int w, int h, const QString &text);
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+
+private:
+    int width_;
+    int height_;
+    QString text_;
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+
+class TurnIndicator : public QGraphicsObject
+{
+    Q_OBJECT
+
+public:
+    enum Diraction {
+        Up,
+        Left,
+        Right,
+        Down
+    };
+    TurnIndicator(double x, double y, int w, int h);
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void change(Diraction dir, Qt::GlobalColor color);
+    void setDiraction(Diraction dir);
+    void setColor(Qt::GlobalColor color);
+
+private:
+    QVector<QPointF> points_;
+    int width_;
+    int height_;
+    Qt::GlobalColor color_;
+    Diraction dir_;
 };
 
 #endif // GRAHICELEMENTS_H
