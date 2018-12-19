@@ -27,15 +27,18 @@ CONFIG += C++17
 SOURCES += \
         main.cpp \
     settings.cpp \
-    battleship.cpp \
     ship.cpp \
-    grahicelements.cpp
+    battleShipWindow.cpp \
+    battleShip.cpp \
+    graphicElements.cpp
 
 HEADERS += \
     settings.h \
-    battleship.h \
     ship.h \
-    grahicelements.h
+    battleShipNamespace.h \
+    battleShipWindow.h \
+    battleShip.h \
+    graphicElements.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -6,34 +6,34 @@ Ship::Ship(int length)
     body_.resize(length);
 }
 
-Ship::Status Ship::shot(int x, int y)
+App::Status Ship::shot(int x, int y)
 {
     for (auto &cell : body_)
         if (cell.x == x && cell.y == y) {
-            cell.status = Status::Destroyed;
+            cell.status = App::Destroyed;
             if (isLife())
-                return Status::Hit;
+                return App::Hit;
             else
-                return Status::Destroyed;
+                return App::Destroyed;
         }
-    return Status::Life;
+    return App::Life;
 }
 
 void Ship::addCell(int id, int x, int y)
 {
-    body_[id] = {x, y, Status::Life};
+    body_[id] = {x, y, App::Life};
 }
 
 void Ship::reset()
 {
     for (auto &el : body_)
-        el = {0, 0, Status::Life};
+        el = {0, 0, App::Life};
 }
 
 bool Ship::isLife() const
 {
     for (const auto &cell : body_)
-        if (cell.status == Status::Life)
+        if (cell.status == App::Life)
             return true;
 
     return false;

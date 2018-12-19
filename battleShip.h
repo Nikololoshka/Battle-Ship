@@ -2,31 +2,18 @@
 #define BATTLESHIP_H
 
 #include <QtWidgets>
-#include "settings.h"
-#include "grahicelements.h"
+#include "battleShipNamespace.h"
+#include "graphicElements.h"
 
-enum Direction {
-    Up,
-    Down,
-    Left,
-    Right,
-    None
-};
-
-Direction &operator++(Direction &increm);
-
-class BattleShip : public QMainWindow
+class BattleShip : public QGraphicsView
 {
     Q_OBJECT
-
 public:
     BattleShip(QWidget *parent = nullptr);
-
+    const MenuButton *exitButton() const;
     void drawMenu();
     void drawGame();
-
-protected:
-    void closeEvent(QCloseEvent *event) override;
+    bool isChange();
 
 protected slots:
     void slotCellClicked(int id);
@@ -34,13 +21,12 @@ protected slots:
 private:
     void drawMesh10x10(QVector<QVector<Cell *>> &map, double x, double y, int w, int h, bool disable = false);
     void drawDestroyedArea(QVector<QVector<Cell *>> &map, int x, int y);
-    void drawDestroyedAreaImpl(QVector<QVector<Cell *>> &map, int x, int y, Direction dir);
+    void drawDestroyedAreaImpl(QVector<QVector<Cell *>> &map, int x, int y, App::Direction dir);
     void setRandShip(QVector<QVector<Cell *>> &map, QVector<Ship *> &ships);
     bool setShip(QVector<QVector<Cell *>> &map, Ship *ship,
                  int x, int y, bool isHor);
     void resetGame();
 
-    QGraphicsView *view;
     QGraphicsScene *scene;
     QVector<MenuButton *> menu;
     QVector<QVector<Cell *>> mapPlayer1;

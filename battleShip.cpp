@@ -1,12 +1,9 @@
-#include "battleship.h"
+#include "battleShip.h"
 
 BattleShip::BattleShip(QWidget *parent)
-    : QMainWindow (parent)
+    : QGraphicsView (parent)
 {
     // initialization
-    Settings::instance().load();
-
-    view = new QGraphicsView;
     scene = new QGraphicsScene(Settings::instance().sceneSize());
     change = false;
     turn = false;
@@ -25,21 +22,19 @@ BattleShip::BattleShip(QWidget *parent)
     }
 
     // setting
-    setMinimumSize(800, 600);
-
     timer.setInterval(1000);
     buttonBack->setPos(0, scene->height() - 50);
     scene->setBackgroundBrush(QBrush(QImage(QStringLiteral(":/bg-image.png"))));
 
-    view->setScene(scene);
-    view->fitInView(0, 0, 800, 600);
-    view->setRenderHint(QPainter::Antialiasing);
-    view->setCacheMode(QGraphicsView::CacheBackground);
-    view->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+    setScene(scene);
+    fitInView(0, 0, 800, 600);
+    setRenderHint(QPainter::Antialiasing);
+    setCacheMode(QGraphicsView::CacheBackground);
+    setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 
     MenuButton *buttonSingleGame = new MenuButton(tr("Start"), 350, 100);
-    MenuButton *buttonLoadGame = new MenuButton(tr("Load game"), 350, 100, MenuButton::Disable);
-    MenuButton *buttonMultiplayer = new MenuButton(tr("Multiplayer"), 350, 100, MenuButton::Disable);
+    MenuButton *buttonLoadGame = new MenuButton(tr("Load game"), 350, 100, App::Disable);
+    MenuButton *buttonMultiplayer = new MenuButton(tr("Multiplayer"), 350, 100, App::Disable);
     MenuButton *buttonExit = new MenuButton(tr("Exit"), 350, 100);
 
     menu.append(buttonSingleGame);
@@ -54,27 +49,15 @@ BattleShip::BattleShip(QWidget *parent)
         scene->addItem(menu[i]);
     }
 
-    QMenu *menuFile = new QMenu(tr("&File"));
-    menuFile->addAction(tr("Exit"), this, &BattleShip::close, QKeySequence("CTRL+Q"));
-    menuBar()->addMenu(menuFile);
-
-    QMenu *menuAbout = new QMenu(tr("&About"));
-    menuAbout->addAction(tr("About battle ship"), [this](){
-        QMessageBox::information(this, tr("About battle ship"),
-                                 tr("Create by:\n"
-                                    "Nikolay Vereshchagin\n"
-                                    "Stankin, IDB-17-09"));
-    });
-    menuBar()->addMenu(menuAbout);
-
-    // layout setup
-    setCentralWidget(view);
-
     // connections
     connect(buttonSingleGame, &MenuButton::clicked, this, &BattleShip::drawGame);
-    connect(buttonExit, &MenuButton::clicked, this, &BattleShip::close);
-    connect(buttonBack, &MenuButton::clicked, this, &BattleShip::drawMenu);    
+    connect(buttonBack, &MenuButton::clicked, this, &BattleShip::drawMenu);
     connect(&timer, &QTimer::timeout, &loop, &QEventLoop::quit);
+}
+
+const MenuButton *BattleShip::exitButton() const
+{
+    return menu.last();
 }
 
 void BattleShip::drawMenu()
@@ -109,7 +92,14 @@ void BattleShip::drawGame()
     drawMesh10x10(mapPlayer2, scene->width() / 2 + 100, scene->height() / 2 - 180, 330, 330);
 
     setRandShip(mapPlayer1, shipsPlayer1);
+    timer.start();
+    loop.exec();
     setRandShip(mapPlayer2, shipsPlayer2);
+}
+
+bool BattleShip::isChange()
+{
+    return change;
 }
 
 void BattleShip::slotCellClicked(int id)
@@ -118,10 +108,11 @@ void BattleShip::slotCellClicked(int id)
         turn = true;
         change = true;
         switch(mapPlayer2[id / 10][id % 10]->shot(id / 10, id % 10)) {  // стреляет игрок 1
-        case Ship::Hit:
+        case App::Impossible:
+        case App::Hit:
             turn = false;
             return;
-        case Ship::Destroyed:
+        case App::Destroyed:
             drawDestroyedArea(mapPlayer2, id / 10, id % 10);
             turn = false;
             return;
@@ -130,26 +121,29 @@ void BattleShip::slotCellClicked(int id)
         }
         // если промазал
         // то стреляет бот
-        indicator->change(TurnIndicator::Left, Qt::red);
+        indicator->change(App::Left, Qt::red);
 
         while (true) {
             int botX = rand() % MAP_SIZE;
             int botY = rand() % MAP_SIZE;
             switch (mapPlayer1[botX][botY]->shot(botX, botY)) {
-            case Ship::Life:
+            case App::Miss:
                 timer.start();
                 loop.exec();
-                indicator->change(TurnIndicator::Right, Qt::green);
+                indicator->change(App::Right, Qt::green);
                 turn = false;
                 return;
-            case Ship::Hit:
+            case App::Hit:
                 timer.start();
                 loop.exec();
                 break;
-            case Ship::Destroyed:
+            case App::Destroyed:
+                drawDestroyedArea(mapPlayer1, botX, botY);
                 timer.start();
                 loop.exec();
-                drawDestroyedArea(mapPlayer1, botX, botY);
+                break;
+            default:
+                break;
             }
         }
     }
@@ -180,7 +174,7 @@ void BattleShip::drawMesh10x10(QVector<QVector<Cell *>> &map, double x, double y
 
 void BattleShip::drawDestroyedArea(QVector<QVector<Cell *>> &map, int x, int y)
 {
-    Direction dir = None;
+    App::Direction dir = App::None;
     int tempX = x, tempY = y;
     bool find = false;
 
@@ -190,31 +184,33 @@ void BattleShip::drawDestroyedArea(QVector<QVector<Cell *>> &map, int x, int y)
         while (!find) {
             x = tempX;
             y = tempY;
-            ++dir;
+            dir = static_cast<App::Direction>((static_cast<int>(dir) + 1) % 5);
             switch (dir) {
-            case Right:
+            case App::Right:
                 x++;
                 break;
-            case Left:
+            case App::Left:
                 x--;
                 break;
-            case Up:
+            case App::Up:
                 y--;
                 break;
-            case Down:
+            case App::Down:
                 y++;
                 break;
             default:
                 return;
             }
-            qDebug() << x << "\t" << y;
-            if (map[x][y]->status() == Cell::Destroyed)
+            if (x >= MAP_SIZE || y >= MAP_SIZE || x < 0 || y < 0)
+                continue;
+
+            if (map[x][y]->status() == App::Destroyed)
                 find = true;
         }
     }
 }
 
-void BattleShip::drawDestroyedAreaImpl(QVector<QVector<Cell *> > &map, int x, int y, Direction dir)
+void BattleShip::drawDestroyedAreaImpl(QVector<QVector<Cell *> > &map, int x, int y, App::Direction dir)
 {
     bool find;
     do {
@@ -223,31 +219,34 @@ void BattleShip::drawDestroyedAreaImpl(QVector<QVector<Cell *> > &map, int x, in
         for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
                 if ((i + x) < MAP_SIZE && (i + x) >= 0 &&
-                    (j + y) < MAP_SIZE && (j + y >= 0)) {
-                    if (map[x + i][y + j]->status() == Cell::NearbyShip)
-                        map[x + i][y + j]->setStatus(Cell::Miss);
-                    if (map[x + i][y + j]->status() == Cell::Hit)
-                        map[x + i][y + j]->setStatus(Cell::Destroyed);
+                    (j + y) < MAP_SIZE && (j + y) >= 0) {
+                    if (map[x + i][y + j]->status() == App::NearbyShip)
+                        map[x + i][y + j]->setStatus(App::Miss);
+                    if (map[x + i][y + j]->status() == App::Hit)
+                        map[x + i][y + j]->setStatus(App::Destroyed);
                 }
             }
         }
         switch (dir) {
-        case Right:
+        case App::Right:
             x++;
             break;
-        case Left:
+        case App::Left:
             x--;
             break;
-        case Up:
+        case App::Up:
             y--;
             break;
-        case Down:
+        case App::Down:
             y++;
             break;
         default:
             return;
         }
-        if (map[x][y]->status() == Cell::Destroyed)
+        if (x >= MAP_SIZE || y >= MAP_SIZE || x < 0 || y < 0)
+            continue;
+
+        if (map[x][y]->status() == App::Destroyed)
             find = true;
 
     } while (find);
@@ -276,7 +275,7 @@ bool BattleShip::setShip(QVector<QVector<Cell *>> &map, Ship *ship, int x, int y
         return false;
     } else {
         for (int i = 0, j = 0; i < ship->length() && j < ship->length(); isHor ? i++ : j++) {
-            if (map[x + i][y + j]->status() != Cell::Empty) {
+            if (map[x + i][y + j]->status() != App::Empty) {
                 correct = false;
                 break;
             }
@@ -287,13 +286,13 @@ bool BattleShip::setShip(QVector<QVector<Cell *>> &map, Ship *ship, int x, int y
             for (int i = -1; i < 2; i++) {
                 for (int j = -1; j < 2; j++) {
                     if (i == 0 && j == 0) {
-                        map[x + a][y + b]->setStatus(Cell::Life);
+                        map[x + a][y + b]->setStatus(App::Life);
                         map[x + a][y + b]->setShip(ship);
                         ship->addCell(a + b, x + a, y + b);
                     } else if (x + i + a < MAP_SIZE && x + i + a >= 0 &&
                              y + j + b < MAP_SIZE && y + j + b >= 0 &&
-                             map[x + i + a][y + j + b]->status() != Cell::Life) {
-                        map[x + i + a][y + j + b]->setStatus(Cell::NearbyShip);
+                             map[x + i + a][y + j + b]->status() != App::Life) {
+                        map[x + i + a][y + j + b]->setStatus(App::NearbyShip);
                     }
                 }
             }
@@ -315,24 +314,4 @@ void BattleShip::resetGame()
         shipsPlayer1[i]->reset();
         shipsPlayer2[i]->reset();
     }
-}
-
-
-void BattleShip::closeEvent(QCloseEvent *event)
-{
-    if (change) {
-        auto answer = QMessageBox::question(this, tr("Exit"), tr("Are you sure you want to go out?"));
-
-        if (answer == QMessageBox::StandardButton::No) {
-            event->ignore();
-            return;
-        }
-    }
-    Settings::instance().save();
-    QWidget::closeEvent(event);
-}
-
-Direction &operator++(Direction &increm)
-{
-    return increm = static_cast<Direction>((static_cast<int>(increm) + 1) % 5);
 }

@@ -1,14 +1,13 @@
-#include "grahicelements.h"
+#include "graphicElements.h"
 
-
-MenuButton::MenuButton(const QString &title, double width, double heigth, ButtonType type)
+MenuButton::MenuButton(const QString &title, double width, double heigth, App::ButtonType type)
     : QGraphicsObject (),
       title_(title), width_(width), heigth_(heigth), hover_(false), type_(type)
 {
     setAcceptHoverEvents(true);
 
     switch (type_) {
-    case ButtonType::Disable:
+    case App::Disable:
         setEnabled(false);
         break;
     default:
@@ -30,7 +29,7 @@ QRectF MenuButton::boundingRect() const
 void MenuButton::paint(QPainter *painter, const QStyleOptionGraphicsItem */*option*/, QWidget */*widget*/)
 {
     switch (type_) {
-    case ButtonType::Disable:
+    case App::Disable:
     {
         QLinearGradient gradient(0, 0, width_, width_);
         for (int i = 0; i < 50; ++i) {
@@ -81,7 +80,7 @@ void MenuButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 
 Cell::Cell(double x, double y, int w, int h, int id, bool disable)
     : width_(w), height_(h), id_(id), hover_(false),
-      disable_(disable), status_(Status::Empty), ship_(nullptr)
+      disable_(disable), status_(App::Empty), ship_(nullptr)
 {
     if (!disable)
         setAcceptHoverEvents(true);
@@ -91,33 +90,33 @@ Cell::Cell(double x, double y, int w, int h, int id, bool disable)
     setPos(x, y);
 }
 
-Ship::Status Cell::shot(int x, int y)
+App::Status Cell::shot(int x, int y)
 {
     switch (status_) {
-    case Status::Empty:         // если пусто
-    case Status::NearbyShip:    // то промах
-        status_ = Status::Miss;        
+    case App::Empty:         // если пусто
+    case App::NearbyShip:    // то промах
+        status_ = App::Miss;
         update();
-        return Ship::Life;
-    case Status::Life:        
+        return App::Miss;
+    case App::Life:
         switch(ship_->shot(x, y)) {
-        case Ship::Hit:         // если попали
-            status_ = Hit;
+        case App::Hit:         // если попали
+            status_ = App::Hit;
             update();
-            return  Ship::Hit;
-        case Ship::Destroyed:   // если уничтожили
-            status_ = Destroyed;
+            return  App::Hit;
+        case App::Destroyed:   // если уничтожили
+            status_ = App::Destroyed;
             update();
-            return  Ship::Destroyed;
+            return  App::Destroyed;
         default:                // если не попали
-            return Ship::Life;  // что, в принципе, не возможно
+            return App::Impossible;   // что, в принципе, не возможно
         }
     default:                    // если повторно стреляем
-        return Ship::Destroyed; // туда же
+        return App::Impossible; // туда же
     }
 }
 
-void Cell::setStatus(Status stat)
+void Cell::setStatus(App::Status stat)
 {
     status_ = stat;
     update();
@@ -128,7 +127,7 @@ void Cell::setShip(Ship *ship)
     ship_ = ship;
 }
 
-Cell::Status Cell::status() const
+App::Status Cell::status() const
 {
     return status_;
 }
@@ -141,28 +140,29 @@ QRectF Cell::boundingRect() const
 void Cell::paint(QPainter *painter, const QStyleOptionGraphicsItem */*option*/, QWidget */*widget*/)
 {
     switch (status_) {
-    case Status::Miss:
+    case App::Miss:
         painter->setBrush(Qt::cyan);
         painter->drawRect(0, 0, width_, height_);
         painter->setPen(QPen(Qt::red, 2));
         painter->drawLine(0, 0, width_, height_);
         painter->drawLine(0, height_, width_, 0);
         break;
-    case Status::Destroyed:
+    case App::Destroyed:
         painter->setBrush(Qt::red);        
         painter->drawRect(0, 0, width_, height_);
         break;
-    case Status::Hit:
+    case App::Hit:
         painter->setBrush(Qt::yellow);
         painter->drawRect(0, 0, width_, height_);
         break;
-    case Status::Life:
-        if (disable_) {
+    case App::Life:
+    case App::NearbyShip:
+    case App::Empty:
+        if (disable_ && status_ == App::Life) {
             painter->setBrush(Qt::blue);
             painter->drawRect(0, 0, width_, height_);
-            break;
+            return;
         }
-    [[clang::fallthrough]]; default:
         painter->setBrush(Qt::cyan);
         painter->drawRect(0, 0, width_, height_);
 
@@ -171,7 +171,9 @@ void Cell::paint(QPainter *painter, const QStyleOptionGraphicsItem */*option*/, 
             painter->drawLine(0, height_, width_, 0);
         }
         break;
-    }
+    default:
+        break;
+    }    
 }
 
 void Cell::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
@@ -216,7 +218,7 @@ void TextCell::paint(QPainter *painter, const QStyleOptionGraphicsItem */*option
 //----------------------------------------------------------------------------------------------------------------------
 
 TurnIndicator::TurnIndicator(double x, double y, int w, int h)
-    : width_(w), height_(h), color_(Qt::green), dir_(Diraction::Right)
+    : width_(w), height_(h), color_(Qt::green), dir_(App::Right)
 {
     setPos(x, y);
     points_ = {
@@ -241,10 +243,10 @@ void TurnIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem */*o
     painter->setBrush(color_);
 
     switch (dir_) {
-    case Diraction::Right:
+    case App::Right:
         painter->rotate(0);
         break;
-    case Diraction::Left:
+    case App::Left:
         painter->translate(width_, height_);
         painter->rotate(180);
         break;
@@ -254,14 +256,14 @@ void TurnIndicator::paint(QPainter *painter, const QStyleOptionGraphicsItem */*o
     painter->drawPolygon(points_.constData(), 7);
 }
 
-void TurnIndicator::change(TurnIndicator::Diraction dir, Qt::GlobalColor color)
+void TurnIndicator::change(App::Direction dir, Qt::GlobalColor color)
 {
     dir_ = dir;
     color_ = color;
     update();
 }
 
-void TurnIndicator::setDiraction(TurnIndicator::Diraction dir)
+void TurnIndicator::setDiraction(App::Direction dir)
 {
     dir_ = dir;
 }

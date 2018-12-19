@@ -2,17 +2,13 @@
 #define SHIP_H
 
 #include <QtWidgets>
+#include "battleShipNamespace.h"
 
 class Ship
 {
 public:
-    enum Status {
-        Life,
-        Hit,
-        Destroyed
-    };
     Ship(int length);
-    Status shot(int x, int y);
+    App::Status shot(int x, int y);
     void addCell(int id, int x, int y);
     void reset();
     bool isLife() const;
@@ -23,7 +19,7 @@ private:
     {
         int x;
         int y;
-        Status status;
+        App::Status status;
     };
 
     int length_;
