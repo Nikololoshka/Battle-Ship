@@ -2,13 +2,13 @@
 #define SHIP_H
 
 #include <QtWidgets>
-#include "battleShipNamespace.h"
+#include "settings.h"
 
 class Ship
 {
 public:
     Ship(int length);
-    App::Status shot(int x, int y);
+    e_Status shot(int x, int y);
     void addCell(int id, int x, int y);
     void reset();
     bool isLife() const;
@@ -19,11 +19,11 @@ private:
     {
         int x;
         int y;
-        App::Status status;
+        e_Status status;
     };
 
-    int length_;
-    QVector<CellShip> body_;
+    int m_length;
+    QVector<CellShip> m_body;
 };
 
 #endif // SHIP_H

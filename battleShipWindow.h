@@ -3,8 +3,7 @@
 
 #include <QtWidgets>
 #include "settings.h"
-#include "battleShip.h"
-#include "battleShipNamespace.h"
+#include "battleShipView.h"
 
 class BattleShipWindow : public QMainWindow
 {
@@ -16,7 +15,7 @@ protected:
     void closeEvent(QCloseEvent *event) override;
 
 private:
-    BattleShip *view;
+    BattleShip *m_pView;
 };
 
 #endif // BATTLESHIPWINDOW_H

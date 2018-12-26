@@ -18,7 +18,7 @@ void Settings::save()
 
 QVector<int> Settings::shipsLength()
 {
-    QVector<int> temp = {1, 1, 1, 1, 2, 2, 2, 3, 3, 4};
+    QVector<int> temp = {4, 3, 3, 2, 2, 2, 1, 1, 1, 1};
     return temp;
 }
 

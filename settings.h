@@ -5,6 +5,27 @@
 
 const int MAP_SIZE = 10;
 
+enum e_ButtonType {
+    Standart,
+    Disable
+};
+enum e_Status {
+    Empty,
+    NearbyShip,
+    Life,
+    Hit,
+    Destroyed,
+    Miss,
+    Impossible
+};
+enum e_Direction {
+    Down,
+    Up,
+    Left,
+    Right,
+    None
+};
+
 class Settings
 {
 public:

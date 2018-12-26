@@ -6,7 +6,7 @@ BattleShipWindow::BattleShipWindow(QWidget *parent)
     // initialization
     Settings::instance().load();
 
-    view = new BattleShip;
+    m_pView = new BattleShip(this);
 
     // setting
     setMinimumSize(800, 600);
@@ -26,15 +26,12 @@ BattleShipWindow::BattleShipWindow(QWidget *parent)
     menuBar()->addMenu(menuAbout);
 
     // layout setup
-    setCentralWidget(view);
-
-    // connections
-    connect(view->exitButton(), &MenuButton::clicked, this, &BattleShipWindow::close);
+    setCentralWidget(m_pView);
 }
 
 void BattleShipWindow::closeEvent(QCloseEvent *event)
 {
-    if (view->isChange()) {
+    if (m_pView->isChange()) {
         auto answer = QMessageBox::question(this, tr("Exit"), tr("Are you sure you want to go out?"));
 
         if (answer == QMessageBox::StandardButton::No) {

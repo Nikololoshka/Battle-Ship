@@ -29,16 +29,19 @@ SOURCES += \
     settings.cpp \
     ship.cpp \
     battleShipWindow.cpp \
-    battleShip.cpp \
-    graphicElements.cpp
+    graphicElements.cpp \
+    player.cpp \
+    bot.cpp \
+    battleShipView.cpp
 
 HEADERS += \
     settings.h \
     ship.h \
-    battleShipNamespace.h \
     battleShipWindow.h \
-    battleShip.h \
-    graphicElements.h
+    graphicElements.h \
+    player.h \
+    bot.h \
+    battleShipView.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
