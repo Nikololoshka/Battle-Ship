@@ -26,6 +26,12 @@ enum e_Direction {
     None
 };
 
+enum e_Difficulty {
+    Easy,
+    Medium,
+    Hard
+};
+
 class Settings
 {
 public:
@@ -34,6 +40,7 @@ public:
     void save();
     QVector<int> shipsLength();
     QRectF sceneSize() const;
+    QSize viewSize() const;
 private:
     Settings();
     Settings(const Settings &other) = delete;

@@ -12,7 +12,7 @@ BattleShip::BattleShip(QWidget *parent)
 
     m_pScene->addItem(initMainMenu());
     m_pScene->addItem(initSinglePlayerMenu());
-    m_pScene->addItem(initPlaceRandomlyMenu());
+    m_pScene->addItem(initRandomPlaceMenu());
     m_pScene->addItem(initGameMenu());
 
     m_pScene->addItem(m_pPlayer1->graphicGameMap());
@@ -47,7 +47,7 @@ void BattleShip::drawSinglePlayerMenu(QGraphicsItem *clickedItem)
     m_pSinglePlayerMenu->setVisible(true);
 }
 
-void BattleShip::drawPlaceRandomlyMenu(QGraphicsItem *clickedItem)
+void BattleShip::drawRandomPlaceMenu(QGraphicsItem *clickedItem)
 {
     clickedItem->parentItem()->setVisible(false);
     m_pPlaceRandomlyMenu->setVisible(true);
@@ -107,20 +107,25 @@ QGraphicsRectItem *BattleShip::initMainMenu()
     m_pMainMenu = new QGraphicsRectItem();
     m_pMainMenu->setVisible(false);
 
+    TextLabel *titleLabel = new TextLabel(tr("Battle ship"));
+    titleLabel->setSize(m_pScene->width(), buttonHeigth);
+    titleLabel->setPos(0, height);
+    titleLabel->setParentItem(m_pMainMenu);
+
     MenuButton *buttonSinglePlayer = new MenuButton(tr("Singleplayer"));
     buttonSinglePlayer->setSize(buttonWidth, buttonHeigth);
     buttonSinglePlayer->setPos(width, height += buttonHeigth);
     buttonSinglePlayer->setParentItem(m_pMainMenu);
 
-    MenuButton *buttonLoadGame = new MenuButton(tr("Load game"), e_ButtonType::Disable);
-    buttonLoadGame->setSize(buttonWidth, buttonHeigth);
-    buttonLoadGame->setPos(width, height += buttonHeigth);
-    buttonLoadGame->setParentItem(m_pMainMenu);
-
     MenuButton *buttonMultiPlayer = new MenuButton(tr("Multiplayer"), e_ButtonType::Disable);
     buttonMultiPlayer->setSize(buttonWidth, buttonHeigth);
     buttonMultiPlayer->setPos(width, height += buttonHeigth);
     buttonMultiPlayer->setParentItem(m_pMainMenu);
+
+    MenuButton *buttonStatistics = new MenuButton(tr("Statistics"), e_ButtonType::Disable);
+    buttonStatistics->setSize(buttonWidth, buttonHeigth);
+    buttonStatistics->setPos(width, height += buttonHeigth);
+    buttonStatistics->setParentItem(m_pMainMenu);
 
     MenuButton *buttonExit = new MenuButton(tr("Exit"));
     buttonExit->setSize(buttonWidth, buttonHeigth);
@@ -135,46 +140,65 @@ QGraphicsRectItem *BattleShip::initMainMenu()
 
 QGraphicsRectItem *BattleShip::initSinglePlayerMenu()
 {
-    auto countElements = 3;
+    auto countElements = 4;
     auto buttonWidth = m_pScene->width() / 4;
-    auto buttonHeigth = m_pScene->height() / 6;
+    auto buttonHeigth = m_pScene->height() / 7;
     auto width = m_pScene->width() / 2 - buttonWidth / 2;
     auto height = m_pScene->height() / 2 - ((countElements + 2) * buttonHeigth) / 2;
 
     m_pSinglePlayerMenu = new QGraphicsRectItem();
     m_pSinglePlayerMenu->setVisible(false);
 
-    MenuButton *buttonSelectDifficulty = new MenuButton(tr("Hard"), e_ButtonType::Disable);
+    TextLabel *titleLabel = new TextLabel(tr("Singleplayer"));
+    titleLabel->setSize(m_pScene->width(), buttonHeigth);
+    titleLabel->setPos(0, height);
+    titleLabel->setParentItem(m_pSinglePlayerMenu);
+
+    MenuSelectedButton *buttonSelectDifficulty = new MenuSelectedButton();
+    buttonSelectDifficulty->addOption(tr("Easy"), e_Difficulty::Easy);
+    buttonSelectDifficulty->addOption(tr("Medium"), e_Difficulty::Medium);
+    buttonSelectDifficulty->addOption(tr("Hard"), e_Difficulty::Hard);
     buttonSelectDifficulty->setSize(buttonWidth, buttonHeigth);
     buttonSelectDifficulty->setPos(width, height += buttonHeigth);
     buttonSelectDifficulty->setParentItem(m_pSinglePlayerMenu);
 
-    MenuButton *buttonPlaceRandomlyMenu = new MenuButton(tr("Random"));
-    buttonPlaceRandomlyMenu->setSize(buttonWidth, buttonHeigth);
-    buttonPlaceRandomlyMenu->setPos(width, height += buttonHeigth);
-    buttonPlaceRandomlyMenu->setParentItem(m_pSinglePlayerMenu);
+    MenuButton *buttonRandomPlaceMenu = new MenuButton(tr("Random"));
+    buttonRandomPlaceMenu->setSize(buttonWidth, buttonHeigth);
+    buttonRandomPlaceMenu->setPos(width, height += buttonHeigth);
+    buttonRandomPlaceMenu->setParentItem(m_pSinglePlayerMenu);
+
+    MenuButton *buttonManualPlaceMenu = new MenuButton(tr("Manual"), e_ButtonType::Disable);
+    buttonManualPlaceMenu->setSize(buttonWidth, buttonHeigth);
+    buttonManualPlaceMenu->setPos(width, height += buttonHeigth);
+    buttonManualPlaceMenu->setParentItem(m_pSinglePlayerMenu);
 
     MenuButton *buttonSinglePlayerBack = new MenuButton(tr("Back"));
     buttonSinglePlayerBack->setSize(buttonWidth, buttonHeigth);
     buttonSinglePlayerBack->setPos(width, height += buttonHeigth);
     buttonSinglePlayerBack->setParentItem(m_pSinglePlayerMenu);
 
-    connect(buttonPlaceRandomlyMenu, &MenuButton::clicked, this, &BattleShip::drawPlaceRandomlyMenu);
+    connect(buttonSelectDifficulty, &MenuSelectedButton::changeDifficulty, m_pPlayerBot, &Bot::setDifficulty);
+    connect(buttonRandomPlaceMenu, &MenuButton::clicked, this, &BattleShip::drawRandomPlaceMenu);
     connect(buttonSinglePlayerBack, &MenuButton::clicked, this, &BattleShip::drawMainMenu);
 
     return m_pSinglePlayerMenu;
 }
 
-QGraphicsRectItem *BattleShip::initPlaceRandomlyMenu()
+QGraphicsRectItem *BattleShip::initRandomPlaceMenu()
 {
     auto countElements = 3;
     auto buttonWidth = m_pScene->width() / 4;
-    auto buttonHeigth = m_pScene->height() / 6;
+    auto buttonHeigth = m_pScene->height() / 7;
     auto width = m_pScene->width() / 4 - buttonWidth / 2;
     auto height = m_pScene->height() / 2 - ((countElements + 2) * buttonHeigth) / 2;
 
     m_pPlaceRandomlyMenu = new QGraphicsRectItem();
     m_pPlaceRandomlyMenu->setVisible(false);
+
+    TextLabel *titleLabel = new TextLabel(tr("Random placement"));
+    titleLabel->setSize(m_pScene->width(), buttonHeigth);
+    titleLabel->setPos(0, height - 50);
+    titleLabel->setParentItem(m_pPlaceRandomlyMenu);
 
     MenuButton *buttonStartGame = new MenuButton(tr("Start"));
     buttonStartGame->setSize(buttonWidth, buttonHeigth);

@@ -10,8 +10,13 @@ class Bot : public Player
 public:
     Bot(QString name, QObject *parent = nullptr);
     e_Status turn(Player *otherPlayer);
+    void setDifficulty(e_Difficulty difficulty);
     int getBotX() const;
     int getBotY() const;
+
+private:
+    e_Status easyDifficulty(Player *otherPlayer);
+    e_Status mediumDifficulty(Player *otherPlayer);
 
 private:
     bool m_expertMode;
@@ -21,6 +26,7 @@ private:
     int m_primaryX;
     int m_primaryY;
     e_Direction m_shotDirection;
+    e_Difficulty m_difficulty;
 };
 
 #endif // BOT_H

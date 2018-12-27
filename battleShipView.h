@@ -20,7 +20,7 @@ private slots:
     void slotCellClicked(int x, int y);
     void drawMainMenu(QGraphicsItem *clickedItem);
     void drawSinglePlayerMenu(QGraphicsItem *clickedItem);
-    void drawPlaceRandomlyMenu(QGraphicsItem *clickedItem);
+    void drawRandomPlaceMenu(QGraphicsItem *clickedItem);
     void drawGame(QGraphicsItem *clickedItem);
     void generateMap();
     void exitFromGameToMenu();
@@ -29,7 +29,7 @@ private slots:
 private:
     QGraphicsRectItem *initMainMenu();
     QGraphicsRectItem *initSinglePlayerMenu();
-    QGraphicsRectItem *initPlaceRandomlyMenu();
+    QGraphicsRectItem *initRandomPlaceMenu();
     QGraphicsRectItem *initGameMenu();
 
     void drawDestroyedArea(Player *player, int x, int y);

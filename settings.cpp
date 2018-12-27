@@ -27,6 +27,11 @@ QRectF Settings::sceneSize() const
     return QRectF(0, 0, 800, 600);
 }
 
+QSize Settings::viewSize() const
+{
+    return QSize(1000, 600);
+}
+
 Settings::Settings()
 {
 
