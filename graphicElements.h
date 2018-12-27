@@ -22,15 +22,44 @@ signals:
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;    
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
-    void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
 private:
     QString m_title;
     double m_width;
-    double m_heigth;
+    double m_height;
     bool m_hover;
     e_ButtonType m_type;
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+
+class MenuSelectedButton : public QGraphicsObject
+{
+    Q_OBJECT
+public:
+    MenuSelectedButton();
+    void setSize(double width, double heigth);
+    void addOption(const QString &name, e_Difficulty difficulty);
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+
+signals:
+    void changeDifficulty(e_Difficulty difficulty);
+
+protected:
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+
+private:
+    double m_width;
+    double m_height;
+    bool m_hover;
+    int m_correctDifficulty;
+    QVector<QPair<QString, e_Difficulty>> m_options;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -72,16 +101,18 @@ private:
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class TextCell : public QGraphicsItem
+class TextLabel : public QGraphicsItem
 {
 public:
-    TextCell(double x, double y, int w, int h, const QString &text);
+    TextLabel(const QString &text);
+    TextLabel(double x, double y, double w, double h, const QString &text);
+    void setSize(double width, double height);
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
 private:
-    int m_width;
-    int m_height;
+    double m_width;
+    double m_height;
     QString m_text;
 };
 

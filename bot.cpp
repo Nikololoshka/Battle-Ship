@@ -6,11 +6,55 @@ Bot::Bot(QString name, QObject *parent)
       m_changeShotDirection(false),
       m_botX(0), m_botY(0),
       m_primaryX(0), m_primaryY(0),
-      m_shotDirection(e_Direction::None)
+      m_shotDirection(e_Direction::None),
+      m_difficulty(e_Difficulty::Easy)
 {
 }
 
 e_Status Bot::turn(Player *otherPlayer)
+{
+    switch (m_difficulty) {
+    case e_Difficulty::Easy:
+        return easyDifficulty(otherPlayer);
+    default:
+        return mediumDifficulty(otherPlayer);
+    }
+//    return mediumDifficulty(otherPlayer);
+}
+
+void Bot::setDifficulty(e_Difficulty difficulty)
+{
+    m_difficulty = difficulty;
+}
+
+
+int Bot::getBotX() const
+{
+    return m_botX;
+}
+
+int Bot::getBotY() const
+{
+    return m_botY;
+}
+
+e_Status Bot::easyDifficulty(Player *otherPlayer)
+{
+    bool selectCoords = false;
+    do {
+        // генерация координат для стрельбы
+        m_botX = qrand() % MAP_SIZE;
+        m_botY = qrand() % MAP_SIZE;
+
+        if (otherPlayer->gameMap()[m_botX][m_botY]->isEmpty())
+            selectCoords = true;
+
+    } while (!selectCoords);
+
+    return otherPlayer->gameMap()[m_botX][m_botY]->shot();
+}
+
+e_Status Bot::mediumDifficulty(Player *otherPlayer)
 {
     if (!m_expertMode) {
         bool selectCoords = false;
@@ -112,15 +156,4 @@ e_Status Bot::turn(Player *otherPlayer)
         break;
     }
     return resultShooting;
-}
-
-
-int Bot::getBotX() const
-{
-    return m_botX;
-}
-
-int Bot::getBotY() const
-{
-    return m_botY;
 }

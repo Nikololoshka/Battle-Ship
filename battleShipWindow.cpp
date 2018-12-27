@@ -10,7 +10,7 @@ BattleShipWindow::BattleShipWindow(QWidget *parent)
 
     // setting
     setMinimumSize(800, 600);
-
+    resize(Settings::instance().viewSize());
 
     QMenu *menuFile = new QMenu(tr("&File"));
     menuFile->addAction(tr("Exit"), this, &BattleShipWindow::close, QKeySequence("CTRL+Q"));

@@ -2,7 +2,7 @@
 
 MenuButton::MenuButton(const QString &title, e_ButtonType type)
     : QGraphicsObject (),
-      m_title(title), m_width(0), m_heigth(0), m_hover(false), m_type(type)
+      m_title(title), m_width(0), m_height(0), m_hover(false), m_type(type)
 {
     setAcceptHoverEvents(true);
 
@@ -18,7 +18,7 @@ MenuButton::MenuButton(const QString &title, e_ButtonType type)
 void MenuButton::setSize(double width, double heigth)
 {
     m_width = width;
-    m_heigth = heigth;
+    m_height = heigth;
 }
 
 void MenuButton::reset()
@@ -29,7 +29,7 @@ void MenuButton::reset()
 
 QRectF MenuButton::boundingRect() const
 {
-    return QRectF(0, 0, m_width, m_heigth);
+    return QRectF(0, 0, m_width, m_height);
 }
 
 void MenuButton::paint(QPainter *painter, const QStyleOptionGraphicsItem */*option*/, QWidget */*widget*/)
@@ -37,7 +37,7 @@ void MenuButton::paint(QPainter *painter, const QStyleOptionGraphicsItem */*opti
     switch (m_type) {
     case e_ButtonType::Disable:
     {
-        QLinearGradient gradient(0, 0, m_width, m_heigth);
+        QLinearGradient gradient(0, 0, m_width, m_height);
         for (int i = 0; i < 50; ++i) {
             if (i % 2 == 0)
                 gradient.setColorAt(i / 50.0, Qt::gray);
@@ -56,9 +56,11 @@ void MenuButton::paint(QPainter *painter, const QStyleOptionGraphicsItem */*opti
     }
 
     painter->setPen(Qt::black);
-    painter->setFont(QFont("Arial", static_cast<int>(m_heigth / 4)));
+    QFont correctFont = QApplication::font();
+    correctFont.setPixelSize(static_cast<int>(m_height * 0.4));
+    painter->setFont(correctFont);
     painter->drawRect(this->boundingRect());
-    painter->drawText(this->boundingRect(), Qt::AlignCenter, m_title);
+    painter->drawText(this->boundingRect(), Qt::AlignCenter | Qt::TextWordWrap, m_title);
 }
 
 void MenuButton::mousePressEvent(QGraphicsSceneMouseEvent */*event*/)
@@ -73,11 +75,11 @@ void MenuButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 }
 
 
-void MenuButton::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
+void MenuButton::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     m_hover = true;
     update();
-    QGraphicsItem::hoverMoveEvent(event);
+    QGraphicsItem::hoverEnterEvent(event);
 }
 
 void MenuButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
@@ -85,6 +87,87 @@ void MenuButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
     m_hover = false;
     update();
     QGraphicsItem::hoverLeaveEvent(event);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+MenuSelectedButton::MenuSelectedButton()
+    : QGraphicsObject (),
+      m_width(0),
+      m_height(0),
+      m_hover(false),
+      m_correctDifficulty(0)
+{
+    setAcceptHoverEvents(true);
+}
+
+void MenuSelectedButton::setSize(double width, double heigth)
+{
+    m_width = width;
+    m_height = heigth;
+}
+
+void MenuSelectedButton::addOption(const QString &name, e_Difficulty difficulty)
+{
+    m_options.append({name, difficulty});
+}
+
+QRectF MenuSelectedButton::boundingRect() const
+{
+    return QRectF(0, 0, m_width, m_height);
+}
+
+void MenuSelectedButton::paint(QPainter *painter, const QStyleOptionGraphicsItem */*option*/, QWidget */*widget*/)
+{
+    if (m_hover)
+        painter->setBrush(Qt::blue);
+    else
+        painter->setBrush(Qt::cyan);
+
+    painter->setPen(Qt::black);
+    QFont correctFont = QApplication::font();
+    correctFont.setPixelSize(static_cast<int>(m_height * 0.35));
+    painter->setFont(correctFont);
+    painter->drawRect(this->boundingRect());
+
+    auto dx = m_width / (m_options.size() + 1);
+
+    for (int i = 0; i < m_options.size(); ++i) {
+        painter->setBrush(Qt::darkYellow);
+        if (i == m_correctDifficulty) {
+            painter->drawText(QRectF(0, 0, m_width, m_height * 0.6),
+                              Qt::AlignCenter | Qt::TextWordWrap,
+                              m_options[i].first);
+            painter->setBrush(Qt::magenta);
+        }
+        painter->drawEllipse(QPointF((i + 1) * dx, m_height * 0.8), m_height * 0.1, m_height * 0.1);
+    }
+}
+
+void MenuSelectedButton::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
+    m_hover = true;
+    update();
+    QGraphicsItem::hoverEnterEvent(event);
+}
+
+void MenuSelectedButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    m_hover = false;
+    update();
+    QGraphicsItem::hoverLeaveEvent(event);
+}
+
+void MenuSelectedButton::mousePressEvent(QGraphicsSceneMouseEvent */*event*/)
+{
+}
+
+void MenuSelectedButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    m_correctDifficulty = (m_correctDifficulty + 1) % m_options.size();
+    update();
+    emit changeDifficulty(m_options[m_correctDifficulty].second);
+    QGraphicsItem::mouseReleaseEvent(event);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -230,20 +313,33 @@ void Cell::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 //----------------------------------------------------------------------------------------------------------------------
 
-TextCell::TextCell(double x, double y, int w, int h, const QString &text)
+TextLabel::TextLabel(const QString &text)
+    : m_width(0), m_height(0), m_text(text)
+{
+}
+
+TextLabel::TextLabel(double x, double y, double w, double h, const QString &text)
     : m_width(w), m_height(h), m_text(text)
 {
     setPos(x, y);
 }
 
-QRectF TextCell::boundingRect() const
+void TextLabel::setSize(double width, double height)
+{
+    m_width = width;
+    m_height = height;
+}
+
+QRectF TextLabel::boundingRect() const
 {
     return QRectF(0, 0, m_width, m_height);
 }
 
-void TextCell::paint(QPainter *painter, const QStyleOptionGraphicsItem */*option*/, QWidget */*widget*/)
+void TextLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem */*option*/, QWidget */*widget*/)
 {
-    painter->setFont(QFont("Arial", m_height * 3 / 5));
+    QFont correctFont = QApplication::font();
+    correctFont.setPixelSize(static_cast<int>(m_height * 0.75));
+    painter->setFont(correctFont);
     painter->drawText(boundingRect(), Qt::AlignCenter, m_text);
 }
 
@@ -263,10 +359,10 @@ GameMap::GameMap(int width, int height, bool disable)
             if (i == 0 && j == 0) {
                 continue;
             } else if (i == 0) {
-                TextCell *temp = new TextCell(dx * j, dy * i, dx, dy, QChar('A' + j - 1));
+                TextLabel *temp = new TextLabel(dx * j, dy * i, dx, dy, QChar('A' + j - 1));
                 temp->setParentItem(this);
             } else if (j == 0) {
-                TextCell *temp = new TextCell(dx * j, dy * i, dx, dy, QString::number(i));
+                TextLabel *temp = new TextLabel(dx * j, dy * i, dx, dy, QString::number(i));
                 temp->setParentItem(this);
             } else {
                 auto temp = new Cell(dx, dy, i - 1, j - 1, disable);
@@ -357,4 +453,3 @@ void TurnIndicator::setColor(Qt::GlobalColor color)
 {
     m_color = color;
 }
-
