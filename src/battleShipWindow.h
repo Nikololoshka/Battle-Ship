@@ -15,7 +15,7 @@ protected:
     void closeEvent(QCloseEvent *event) override;
 
 private:
-    BattleShip *m_pView;
+    BattleShipView *m_pView;
 };
 
 #endif // BATTLESHIPWINDOW_H

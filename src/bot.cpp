@@ -19,7 +19,6 @@ e_Status Bot::turn(Player *otherPlayer)
     default:
         return mediumDifficulty(otherPlayer);
     }
-//    return mediumDifficulty(otherPlayer);
 }
 
 void Bot::setDifficulty(e_Difficulty difficulty)
@@ -43,15 +42,15 @@ e_Status Bot::easyDifficulty(Player *otherPlayer)
     bool selectCoords = false;
     do {
         // генерация координат для стрельбы
-        m_botX = qrand() % MAP_SIZE;
-        m_botY = qrand() % MAP_SIZE;
+        m_botX = qrand() % g_MAP_SIZE;
+        m_botY = qrand() % g_MAP_SIZE;
 
-        if (otherPlayer->gameMap()[m_botX][m_botY]->isEmpty())
+        if (otherPlayer->gameMap()->isEmptyCell(m_botX, m_botY))
             selectCoords = true;
 
     } while (!selectCoords);
 
-    return otherPlayer->gameMap()[m_botX][m_botY]->shot();
+    return otherPlayer->gameMap()->shot(m_botX, m_botY);
 }
 
 e_Status Bot::mediumDifficulty(Player *otherPlayer)
@@ -60,10 +59,10 @@ e_Status Bot::mediumDifficulty(Player *otherPlayer)
         bool selectCoords = false;
         do {
             // генерация координат для стрельбы
-            m_botX = qrand() % MAP_SIZE;
-            m_botY = qrand() % MAP_SIZE;
+            m_botX = qrand() % g_MAP_SIZE;
+            m_botY = qrand() % g_MAP_SIZE;
 
-            if (otherPlayer->gameMap()[m_botX][m_botY]->isEmpty())
+            if (otherPlayer->gameMap()->isEmptyCell(m_botX, m_botY))
                 selectCoords = true;
 
         } while (!selectCoords);
@@ -75,15 +74,15 @@ e_Status Bot::mediumDifficulty(Player *otherPlayer)
             case e_Direction::Left:
                 if (m_botX > 0) {
                     m_botX--;
-                    if (!otherPlayer->gameMap()[m_botX][m_botY]->isEmpty())
+                    if (!otherPlayer->gameMap()->isEmptyCell(m_botX, m_botY))
                         m_changeShotDirection = true;
                 } else
                     m_changeShotDirection = true;
                 break;
             case e_Direction::Right:
-                if (m_botX < MAP_SIZE - 1) {
+                if (m_botX < g_MAP_SIZE - 1) {
                     m_botX++;
-                    if (!otherPlayer->gameMap()[m_botX][m_botY]->isEmpty())
+                    if (!otherPlayer->gameMap()->isEmptyCell(m_botX, m_botY))
                         m_changeShotDirection = true;
                 } else
                     m_changeShotDirection = true;
@@ -91,15 +90,15 @@ e_Status Bot::mediumDifficulty(Player *otherPlayer)
             case e_Direction::Down:
                 if (m_botY > 0) {
                     m_botY--;
-                    if (!otherPlayer->gameMap()[m_botX][m_botY]->isEmpty())
+                    if (!otherPlayer->gameMap()->isEmptyCell(m_botX, m_botY))
                         m_changeShotDirection = true;
                 } else
                     m_changeShotDirection = true;
                 break;
             case e_Direction::Up:
-                if (m_botY < MAP_SIZE - 1) {
+                if (m_botY < g_MAP_SIZE - 1) {
                     m_botY++;
-                    if (!otherPlayer->gameMap()[m_botX][m_botY]->isEmpty())
+                    if (!otherPlayer->gameMap()->isEmptyCell(m_botX, m_botY))
                         m_changeShotDirection = true;
                 } else
                     m_changeShotDirection = true;
@@ -118,7 +117,7 @@ e_Status Bot::mediumDifficulty(Player *otherPlayer)
         } while (m_changeShotDirection);
     }
 
-    auto resultShooting = otherPlayer->gameMap()[m_botX][m_botY]->shot();
+    auto resultShooting = otherPlayer->gameMap()->shot(m_botX, m_botY);
 
     switch (resultShooting) {
     case e_Status::Hit:

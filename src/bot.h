@@ -2,12 +2,17 @@
 #define BOT_H
 
 #include <QtWidgets>
+#include "appNamespace.h"
 #include "player.h"
-#include "settings.h"
 
 class Bot : public Player
 {
 public:
+    enum e_Difficulty {
+        Easy,
+        Medium
+    };
+
     Bot(QString name, QObject *parent = nullptr);
     e_Status turn(Player *otherPlayer);
     void setDifficulty(e_Difficulty difficulty);

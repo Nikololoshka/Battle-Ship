@@ -19,10 +19,11 @@ e_Status Ship::shot(int x, int y)
     return e_Status::Life;
 }
 
-void Ship::addCell(int id, int x, int y)
+void Ship::setCellCoord(int numberCell, int x, int y)
 {
-    m_body[id] = {x, y, e_Status::Life};
+     m_body[numberCell] = {x, y, e_Status::Life};
 }
+
 
 void Ship::reset()
 {

@@ -4,9 +4,7 @@ BattleShipWindow::BattleShipWindow(QWidget *parent)
     : QMainWindow (parent)
 {
     // initialization
-    Settings::instance().load();
-
-    m_pView = new BattleShip(this);
+    m_pView = new BattleShipView(this);
 
     // setting
     QMenu *menuFile = new QMenu(tr("&File"));
@@ -28,7 +26,7 @@ BattleShipWindow::BattleShipWindow(QWidget *parent)
 
 void BattleShipWindow::closeEvent(QCloseEvent *event)
 {
-    if (m_pView->isChange()) {
+    if (m_pView->core()->isChange()) {
         auto answer = QMessageBox::question(this, tr("Exit"), tr("Are you sure you want to go out?"));
 
         if (answer == QMessageBox::StandardButton::No) {
@@ -36,7 +34,6 @@ void BattleShipWindow::closeEvent(QCloseEvent *event)
             return;
         }
     }
-    Settings::instance().save();
     QWidget::closeEvent(event);
 }
 

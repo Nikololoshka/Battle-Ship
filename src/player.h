@@ -2,18 +2,22 @@
 #define PLAYER_H
 
 #include <QtWidgets>
-#include "graphicElements.h"
+#include "gameMap.h"
+#include "ship.h"
 
 class Player : public QObject
 {
     Q_OBJECT
 public:
-    Player(QString name, QObject *parent = nullptr, bool showShips = false);
+    Player(QString name, QObject *parent = nullptr);
+
+    void setMap(GameMap *map);
+    void setShips(QVector<Ship *> ships);
+
     bool isDead() const;
-    void resetMap();
-    QString &name();
-    QVector<QVector<Cell *>> &gameMap();
-    GameMap *graphicGameMap();
+    void reset();
+    QString name() const;
+    GameMap *gameMap();
     QVector<Ship *> &ships();
 
 signals:

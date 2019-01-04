@@ -2,14 +2,14 @@
 #define SHIP_H
 
 #include <QtWidgets>
-#include "settings.h"
+#include "appNamespace.h"
 
 class Ship
 {
 public:
     Ship(int length);
     e_Status shot(int x, int y);
-    void addCell(int id, int x, int y);
+    void setCellCoord(int numberCell, int x, int y);
     void reset();
     bool isLife() const;
     int length() const;
