@@ -6,6 +6,7 @@ MenuDisableButton::MenuDisableButton(const QString &title)
       m_width(0),
       m_height(0)
 {
+    m_font = QApplication::font();
 }
 
 MenuDisableButton::MenuDisableButton(const QString &title, double width, double heigth)
@@ -14,12 +15,14 @@ MenuDisableButton::MenuDisableButton(const QString &title, double width, double 
       m_width(width),
       m_height(heigth)
 {
+    m_font = computeFontForText(boundingRect().toRect(), Qt::AlignCenter | Qt::TextWordWrap, m_title);
 }
 
 void MenuDisableButton::setSize(double width, double heigth)
 {
     m_width = width;
     m_height = heigth;
+    m_font = computeFontForText(boundingRect().toRect(), Qt::AlignCenter | Qt::TextWordWrap, m_title);
 }
 
 QRectF MenuDisableButton::boundingRect() const
@@ -39,9 +42,7 @@ void MenuDisableButton::paint(QPainter *painter, const QStyleOptionGraphicsItem 
     painter->setBrush(gradient);
 
     painter->setPen(Qt::black);
-    QFont correctFont = QApplication::font();
-    correctFont.setPixelSize(static_cast<int>(m_height * 0.4));
-    painter->setFont(correctFont);
+    painter->setFont(m_font);
     painter->drawRect(this->boundingRect());
     painter->drawText(this->boundingRect(), Qt::AlignCenter | Qt::TextWordWrap, m_title);
 }

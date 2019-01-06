@@ -1,6 +1,8 @@
 #ifndef APPNAMESPACE_H
 #define APPNAMESPACE_H
 
+#include <QtWidgets>
+
 const int g_MAP_SIZE = 10;
 
 enum class e_Status {
@@ -19,5 +21,7 @@ enum class e_Direction {
     Right,
     None
 };
+
+QFont computeFontForText(QRect rect, int flags, const QString &text, double scale = 0.6);
 
 #endif // APPNAMESPACE_H

@@ -16,7 +16,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += C++17
 
 HEADERS += \
-    src/appNamespace.h \
     src/battleShipCore.h \
     src/battleShipView.h \
     src/battleShipWindow.h \
@@ -30,7 +29,8 @@ HEADERS += \
     src/textLabel.h \
     src/turnIndicator.h \
     src/menuSelectedButton.h \
-    src/menuDisableButton.h
+    src/menuDisableButton.h \
+    src/utilities.h
 
 SOURCES += \
     src/battleShipCore.cpp \
@@ -47,7 +47,8 @@ SOURCES += \
     src/textLabel.cpp \
     src/turnIndicator.cpp \
     src/menuDisableButton.cpp \
-    src/menuSelectedButton.cpp
+    src/menuSelectedButton.cpp \
+    src/utilities.cpp
 
 RESOURCES += \
     res/res.qrc

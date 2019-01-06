@@ -1,4 +1,4 @@
-#include "BattleShipView.h"
+#include "battleShipView.h"
 
 BattleShipView::BattleShipView(QWidget *parent)
     : QGraphicsView(parent)
@@ -6,7 +6,6 @@ BattleShipView::BattleShipView(QWidget *parent)
     // initialization
     m_pScene = new QGraphicsScene(Settings::inst().sceneSize());
     m_pBattleShipCore = new BattleShipCore(this);
-
     m_pScene->addItem(m_pBattleShipCore->playerHumanMap());
     m_pScene->addItem(m_pBattleShipCore->playerBotMap());
 
@@ -75,6 +74,12 @@ void BattleShipView::drawGame(QGraphicsItem *clickedItem)
     m_pBattleShipCore->generateBotMap();
 }
 
+void BattleShipView::drawGameFromMenualPlace(QGraphicsItem *clickedItem)
+{
+    m_pBattleShipCore->setHumanPlayerManualPlaceMap();
+    drawGame(clickedItem);
+}
+
 void BattleShipView::exitFromGameToMenu(QGraphicsItem *clickedItem)
 {
     if (m_pBattleShipCore->isChange()) {
@@ -106,7 +111,7 @@ void BattleShipView::playerWins(QString winnerName)
 QGraphicsRectItem *BattleShipView::initMainMenu()
 {
     auto countElements = 4;
-    auto buttonWidth = m_pScene->width() / 4;
+    auto buttonWidth = m_pScene->width() / 3;
     auto buttonHeigth = m_pScene->height() / 7;
     auto width = m_pScene->width() / 2 - buttonWidth / 2;
     auto height = m_pScene->height() / 2 - ((countElements + 2) * buttonHeigth) / 2;
@@ -148,7 +153,7 @@ QGraphicsRectItem *BattleShipView::initMainMenu()
 QGraphicsRectItem *BattleShipView::initSinglePlayerMenu()
 {
     auto countElements = 4;
-    auto buttonWidth = m_pScene->width() / 4;
+    auto buttonWidth = m_pScene->width() / 3;
     auto buttonHeigth = m_pScene->height() / 7;
     auto width = m_pScene->width() / 2 - buttonWidth / 2;
     auto height = m_pScene->height() / 2 - ((countElements + 2) * buttonHeigth) / 2;
@@ -194,7 +199,7 @@ QGraphicsRectItem *BattleShipView::initSinglePlayerMenu()
 QGraphicsRectItem *BattleShipView::initRandomPlaceMenu()
 {
     auto countElements = 3;
-    auto buttonWidth = m_pScene->width() / 4;
+    auto buttonWidth = m_pScene->width() / 3;
     auto buttonHeigth = m_pScene->height() / 7;
     auto width = m_pScene->width() / 4 - buttonWidth / 2;
     auto height = m_pScene->height() / 2 - ((countElements + 2) * buttonHeigth) / 2;
@@ -242,7 +247,7 @@ QGraphicsRectItem *BattleShipView::initManualPlaceMenu()
 
     TextLabel *titleLabel = new TextLabel(tr("Manual placement"));
     titleLabel->setSize(m_pScene->width(), buttonHeigth);
-    titleLabel->setPos(0, height - 50);
+    titleLabel->setPos(0, height - 100);
     titleLabel->setParentItem(m_pManualPlaceMenu);
 
     MenuButton *buttonStartGame = new MenuButton(tr("Start"));
@@ -255,12 +260,11 @@ QGraphicsRectItem *BattleShipView::initManualPlaceMenu()
     buttonPlaceRandomlyBack->setPos(width, height += buttonHeigth);
     buttonPlaceRandomlyBack->setParentItem(m_pManualPlaceMenu);
 
-//    GameMapDragAndDrop *map = new GameMapDragAndDrop(330, 330);
-//    map->setPos(m_pScene->width() / 2, m_pScene->height() / 2 - 180);
-//    map->setParentItem(m_pManualPlaceMenu);
+    auto map = m_pBattleShipCore->dragAndDropMap();
+    map->setPos(m_pScene->width() / 2, m_pScene->height() / 2 - 165);
+    map->setParentItem(m_pManualPlaceMenu);
 
-
-    connect(buttonStartGame, &MenuButton::clicked, this, &BattleShipView::drawGame);
+    connect(buttonStartGame, &MenuButton::clicked, this, &BattleShipView::drawGameFromMenualPlace);
     connect(buttonPlaceRandomlyBack, &MenuButton::clicked, this, &BattleShipView::exitFromPlaceRandomlyMenu);
 
     return m_pManualPlaceMenu;

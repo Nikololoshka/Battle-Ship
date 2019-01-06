@@ -2,7 +2,7 @@
 #define BATTLESHIP_H
 
 #include <QtWidgets>
-#include "appNamespace.h"
+#include "utilities.h"
 #include "settings.h"
 #include "battleShipCore.h"
 #include "turnIndicator.h"
@@ -25,6 +25,8 @@ private slots:
     void drawRandomPlaceMenu(QGraphicsItem *clickedItem);
     void drawManualPlaceMenu(QGraphicsItem  *clickedItem);
     void drawGame(QGraphicsItem *clickedItem);
+
+    void drawGameFromMenualPlace(QGraphicsItem *clickedItem);
 
     void exitFromGameToMenu(QGraphicsItem *clickedItem);
     void exitFromPlaceRandomlyMenu(QGraphicsItem *clickedItem);

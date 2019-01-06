@@ -8,6 +8,8 @@ BattleShipCore::BattleShipCore(QObject *parent)
     m_pPlayerHuman = new Player(tr("User"), this);
     m_pPlayerBot = new Bot(tr("Computer"), this);
 
+    m_pDragAndDropMap = new GameMapDragAndDrop(330, 330);
+
     GameMap *mapHuman = new GameMap(330, 330, true);
     GameMap *mapBot = new GameMap(330, 330);
 
@@ -22,6 +24,11 @@ BattleShipCore::BattleShipCore(QObject *parent)
     connect(&m_timer, &QTimer::timeout, &m_loop, &QEventLoop::quit);
 }
 
+void BattleShipCore::setHumanPlayerManualPlaceMap()
+{
+    m_pDragAndDropMap->setShipsOnGameMap(m_pPlayerHuman->gameMap(), m_pPlayerHuman->ships());
+}
+
 bool BattleShipCore::isChange() const
 {
     return m_change;
@@ -29,7 +36,8 @@ bool BattleShipCore::isChange() const
 
 void BattleShipCore::resetGame()
 {
-    m_change = false;
+    m_change = false;    
+    m_turn = false;
     m_pPlayerBot->reset();
     m_pPlayerHuman->reset();
 }
@@ -42,6 +50,11 @@ GameMap *BattleShipCore::playerHumanMap() const
 GameMap *BattleShipCore::playerBotMap() const
 {
     return  m_pPlayerBot->gameMap();
+}
+
+GameMapDragAndDrop *BattleShipCore::dragAndDropMap()
+{
+    return m_pDragAndDropMap;
 }
 
 void BattleShipCore::setRandShip(GameMap *map, QVector<Ship *> &ships)
@@ -59,19 +72,17 @@ void BattleShipCore::setRandShip(GameMap *map, QVector<Ship *> &ships)
 
 bool BattleShipCore::setShip(GameMap *map, Ship *ship, int x, int y, bool isHor)
 {
-    //    qDebug() << "----------------------";
-    //    for (int i = 0; i < MAP_SIZE; ++i) {
-    //        QString temp = "";
-    //        for (int j = 0; j < MAP_SIZE; ++j) {
-    //            if (player->gameMap()->cellStatus(i, j) == e_Status::Life)
-    //                temp.append("#");
-    //            else if (player->gameMap()->cellStatus(i, j) == e_Status::NearbyShip)
-    //                temp.append("*");
-    //            else
-    //                temp.append("-");
-    //        }
-    //        qDebug() << temp;
-    //    }
+//        for (int i = 0; i < g_MAP_SIZE; ++i) {
+//            QString temp = "";
+//            for (int j = 0; j < g_MAP_SIZE; ++j) {
+//                if (map->cellStatus(i, j) == e_Status::Life)
+//                    temp.append("#");
+//                else if (map->cellStatus(i, j) == e_Status::NearbyShip)
+//                    temp.append("*");
+//                else
+//                    temp.append("-");
+//            }
+//        }
 
     bool correct = true;
 
@@ -126,14 +137,14 @@ void BattleShipCore::turnHuman(int x, int y)
         }
         // если промазал
         // то стреляет бот
-        emit changeTurn(e_Direction::Left, Qt::red);
+        emit changeTurn(180, Qt::red);
 
         while (true) {
             switch (m_pPlayerBot->turn(m_pPlayerHuman)) {
             case e_Status::Miss:
                 m_timer.start();
                 m_loop.exec();
-                emit changeTurn(e_Direction::Right, Qt::green);
+                emit changeTurn(180, Qt::green);
                 m_turn = false;
                 return;
             case e_Status::Hit:
@@ -178,6 +189,7 @@ bool BattleShipCore::winnerChecker()
     if (m_pPlayerHuman->isDead()) {
         m_change = false;
         emit endGame(m_pPlayerBot->name());
+        emit changeTurn(180, Qt::green);
         return true;
     }
     if (m_pPlayerBot->isDead()) {

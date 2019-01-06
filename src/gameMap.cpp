@@ -20,19 +20,27 @@ GameMap::GameMap(int width, int height, bool disable)
                 TextLabel *temp = new TextLabel(dx * j, dy * i, dx, dy, QString::number(i));
                 temp->setParentItem(this);
             } else {
-                auto temp = new Cell(dx, dy, i - 1, j - 1, disable);
+                auto temp = new Cell(dx, dy, i - 1, j - 1);
                 temp->setPos(dx * j, dy * i);
                 temp->setParentItem(this);
 
                 if (!disable) {
                     temp->setAcceptHoverEvents(true);
-                    connect(temp, &Cell::clicked, this, &GameMap::clicked);
+                    temp->setShowShip(false);
                 }
                 m_mesh[i - 1][j - 1] = temp;                
             }
         }
     }
     this->setVisible(false);
+}
+
+GameMap::~GameMap()
+{
+    for (int i = 0; i < g_MAP_SIZE; ++i)
+        for (int j = 0; j < g_MAP_SIZE; ++j)
+            if (m_mesh[i][j] != nullptr)
+                delete m_mesh[i][j];
 }
 
 e_Status GameMap::shot(int x, int y)
@@ -106,7 +114,7 @@ void GameMap::paint(QPainter *painter, const QStyleOptionGraphicsItem */*option*
 
 //----------------------------------------------------------------------------------------------------------------------
 
-Cell::Cell(int width, int heigth, int idX, int idY, bool showShip)
+GameMap::Cell::Cell(int width, int heigth, int idX, int idY)
     : QGraphicsObject (),
       m_status(e_Status::Empty),
       m_width(width),
@@ -114,22 +122,27 @@ Cell::Cell(int width, int heigth, int idX, int idY, bool showShip)
       m_idX(idX),
       m_idY(idY),
       m_hover(false),
-      m_showShip(showShip)
+      m_showShip(true)
 {
 }
 
-void Cell::reset()
+void GameMap::Cell::setShowShip(bool flag)
+{
+    m_showShip = flag;
+}
+
+void GameMap::Cell::reset()
 {
     m_status = e_Status::Empty;
     m_pShip = nullptr;
 }
 
-QRectF Cell::boundingRect() const
+QRectF GameMap::Cell::boundingRect() const
 {
     return  QRectF(0, 0, m_width, m_height);
 }
 
-void Cell::paint(QPainter *painter, const QStyleOptionGraphicsItem */*option*/, QWidget */*widget*/)
+void GameMap::Cell::paint(QPainter *painter, const QStyleOptionGraphicsItem */*option*/, QWidget */*widget*/)
 {
     switch (m_status) {
     case e_Status::Miss:
@@ -168,27 +181,30 @@ void Cell::paint(QPainter *painter, const QStyleOptionGraphicsItem */*option*/, 
     }
 }
 
-void Cell::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
+void GameMap::Cell::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 {
     m_hover = true;
     update();
-    QGraphicsItem::hoverMoveEvent(event);
+    QGraphicsObject::hoverMoveEvent(event);
 }
 
-void Cell::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+void GameMap::Cell::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     m_hover = false;
     update();
-    QGraphicsItem::hoverLeaveEvent(event);
+    QGraphicsObject::hoverLeaveEvent(event);
 }
 
-void Cell::mousePressEvent(QGraphicsSceneMouseEvent */*event*/)
+void GameMap::Cell::mousePressEvent(QGraphicsSceneMouseEvent */*event*/)
 {
+//    QGraphicsObject::mousePressEvent(event);
 }
 
-void Cell::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void GameMap::Cell::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    emit clicked(m_idX, m_idY);
-    QGraphicsItem::mouseReleaseEvent(event);
+    if (!m_showShip)
+        emit qobject_cast<GameMap *>(this->parentObject())->clicked(m_idX, m_idY);
+
+    QGraphicsObject::mouseReleaseEvent(event);
 }
 

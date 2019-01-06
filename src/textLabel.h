@@ -2,6 +2,7 @@
 #define TEXTLABEL_H
 
 #include <QtWidgets>
+#include "utilities.h"
 
 class TextLabel : public QGraphicsItem
 {
@@ -17,6 +18,7 @@ private:
     double m_width;
     double m_height;
     QString m_text;
+    QFont m_font;
 };
 
 #endif // TEXTLABEL_H

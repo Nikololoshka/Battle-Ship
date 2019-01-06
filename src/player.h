@@ -10,6 +10,7 @@ class Player : public QObject
     Q_OBJECT
 public:
     Player(QString name, QObject *parent = nullptr);
+    virtual ~Player();
 
     void setMap(GameMap *map);
     void setShips(QVector<Ship *> ships);
@@ -25,8 +26,8 @@ signals:
 
 protected:
     QString m_playerName;
-    QVector<Ship *> m_shipsPlayer;
     GameMap *m_pGameMapPlayer;
+    QVector<Ship *> m_shipsPlayer;
 };
 
 #endif // PLAYER_H

@@ -54,6 +54,9 @@ void MenuSelectedButton::paint(QPainter *painter, const QStyleOptionGraphicsItem
     for (int i = 0; i < m_options.size(); ++i) {
         painter->setBrush(Qt::darkYellow);
         if (i == m_correctValue) {
+            painter->setFont(computeFontForText(QRectF(0, 0, m_width, m_height * 0.6).toRect(),
+                                                Qt::AlignCenter | Qt::TextWordWrap,
+                                                m_options[i].first));
             painter->drawText(QRectF(0, 0, m_width, m_height * 0.6),
                               Qt::AlignCenter | Qt::TextWordWrap,
                               m_options[i].first);
@@ -67,18 +70,19 @@ void MenuSelectedButton::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     m_hover = true;
     update();
-    QGraphicsItem::hoverEnterEvent(event);
+    QGraphicsObject::hoverEnterEvent(event);
 }
 
 void MenuSelectedButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     m_hover = false;
     update();
-    QGraphicsItem::hoverLeaveEvent(event);
+    QGraphicsObject::hoverLeaveEvent(event);
 }
 
 void MenuSelectedButton::mousePressEvent(QGraphicsSceneMouseEvent */*event*/)
 {
+//    QGraphicsObject::mousePressEvent(event);
 }
 
 void MenuSelectedButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
@@ -86,5 +90,5 @@ void MenuSelectedButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     m_correctValue = (m_correctValue + 1) % m_options.size();
     update();
     emit changeValue(m_options[m_correctValue].second);
-    QGraphicsItem::mouseReleaseEvent(event);
+    QGraphicsObject::mouseReleaseEvent(event);
 }

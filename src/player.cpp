@@ -1,8 +1,20 @@
 #include "player.h"
 
 Player::Player(QString name, QObject *parent)
-    : QObject(parent), m_playerName(name)
+    : QObject(parent),
+      m_playerName(name),
+      m_pGameMapPlayer(nullptr)
 {
+}
+
+Player::~Player()
+{
+    if (m_pGameMapPlayer != nullptr)
+        delete m_pGameMapPlayer;
+
+    for (auto &ship : m_shipsPlayer)
+        if (ship != nullptr)
+            delete ship;
 }
 
 void Player::setMap(GameMap *map)

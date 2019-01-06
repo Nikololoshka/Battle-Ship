@@ -2,19 +2,11 @@
 #define SHIP_H
 
 #include <QtWidgets>
-#include "appNamespace.h"
+#include "utilities.h"
 
 class Ship
 {
 public:
-    Ship(int length);
-    e_Status shot(int x, int y);
-    void setCellCoord(int numberCell, int x, int y);
-    void reset();
-    bool isLife() const;
-    int length() const;
-
-private:
     struct CellShip
     {
         int x;
@@ -22,6 +14,16 @@ private:
         e_Status status;
     };
 
+    Ship(int length);
+    e_Status shot(int x, int y);
+    void setCellCoord(int numberCell, int x, int y);
+    int numberCell(int x, int y);
+    QVector<CellShip> &body();
+    void reset();
+    bool isLife() const;
+    int length() const;
+
+private:
     int m_length;
     QVector<CellShip> m_body;
 };

@@ -2,6 +2,7 @@
 #define MENUBUTTON_H
 
 #include <QtWidgets>
+#include "utilities.h"
 
 class MenuButton : public QGraphicsObject
 {
@@ -28,6 +29,7 @@ private:
     double m_width;
     double m_height;
     bool m_hover;
+    QFont m_font;
 };
 
 #endif // MENUBUTTON_H

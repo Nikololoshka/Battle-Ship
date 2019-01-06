@@ -16,7 +16,9 @@ BattleShipWindow::BattleShipWindow(QWidget *parent)
         QMessageBox::information(this, tr("About battle ship"),
                                  tr("Create by:\n"
                                     "Nikolay Vereshchagin\n"
-                                    "Stankin, IDB-17-09"));
+                                    "Stankin, IDB-17-09\n\n"
+                                    "Thank you for materials:\n") +
+                                    "subtlepatterns.com - https://subtlepatterns.com/\n");
     });
     menuBar()->addMenu(menuAbout);
 

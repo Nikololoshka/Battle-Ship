@@ -2,6 +2,7 @@
 #define MENUDISABLEBUTTON_H
 
 #include <QtWidgets>
+#include "utilities.h"
 
 class MenuDisableButton : public QGraphicsItem
 {
@@ -17,6 +18,7 @@ private:
     QString m_title;
     double m_width;
     double m_height;
+    QFont m_font;
 };
 
 #endif // MENUDISABLEBUTTON_H

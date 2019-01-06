@@ -2,7 +2,7 @@
 #define BOT_H
 
 #include <QtWidgets>
-#include "appNamespace.h"
+#include "utilities.h"
 #include "player.h"
 
 class Bot : public Player

@@ -21,7 +21,21 @@ e_Status Ship::shot(int x, int y)
 
 void Ship::setCellCoord(int numberCell, int x, int y)
 {
-     m_body[numberCell] = {x, y, e_Status::Life};
+    m_body[numberCell] = {x, y, e_Status::Life};
+}
+
+int Ship::numberCell(int x, int y)
+{
+    for (int i = 0; i < m_body.size(); ++i) {
+        if (m_body[i].x == x && m_body[i].y == y)
+            return i;
+    }
+    return -1;
+}
+
+QVector<Ship::CellShip> &Ship::body()
+{
+    return m_body;
 }
 
 
