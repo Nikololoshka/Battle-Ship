@@ -278,7 +278,7 @@ QGraphicsRectItem *BattleShipView::initGameMenu()
     m_pGameMenu = new QGraphicsRectItem();
     m_pGameMenu->setVisible(false);
 
-    TurnIndicator *indicator = new TurnIndicator(60, 60);
+    auto indicator = m_pBattleShipCore->turnIndicator();
     indicator->setPos(width - 30, height - 30);
     indicator->setParentItem(m_pGameMenu);
 
@@ -287,7 +287,6 @@ QGraphicsRectItem *BattleShipView::initGameMenu()
     buttonBack->setPos(0, m_pScene->height() - 60);
     buttonBack->setParentItem(m_pGameMenu);
 
-    connect(m_pBattleShipCore, &BattleShipCore::changeTurn, indicator, &TurnIndicator::change);
     connect(buttonBack, &MenuButton::clicked, this, &BattleShipView::exitFromGameToMenu);
 
     return m_pGameMenu;

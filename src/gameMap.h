@@ -10,10 +10,9 @@ class GameMap : public QGraphicsObject
     Q_OBJECT
 public:
     GameMap(int width, int height, bool disable = false);
-    ~GameMap() override;
     e_Status shot(int x, int y);
 
-    void setCellShip(int x, int y, Ship *ship);
+    void setCellShip(int x, int y, QSharedPointer<Ship> &ship);
     void setCellStatus(int x, int y, e_Status st);
 
     e_Status cellStatus(int x, int y) const;
@@ -37,7 +36,7 @@ protected:
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
         e_Status m_status;
-        Ship *m_pShip;
+        QSharedPointer<Ship> m_pShip;
 
     private:
         void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
@@ -56,7 +55,7 @@ protected:
 
     int m_width;
     int m_height;
-    QVector<QVector<Cell *>> m_mesh;
+    QVector<QVector<QSharedPointer<Cell>>> m_mesh;
 };
 
 #endif // GAMEMAP_H

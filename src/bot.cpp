@@ -42,8 +42,8 @@ e_Status Bot::easyDifficulty(Player *otherPlayer)
     bool selectCoords = false;
     do {
         // генерация координат для стрельбы
-        m_botX = qrand() % g_MAP_SIZE;
-        m_botY = qrand() % g_MAP_SIZE;
+        m_botX = generateRandomNumber(0, g_MAP_SIZE - 1);
+        m_botY = generateRandomNumber(0, g_MAP_SIZE - 1);
 
         if (otherPlayer->gameMap()->isEmptyCell(m_botX, m_botY))
             selectCoords = true;

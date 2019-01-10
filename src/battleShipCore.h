@@ -8,6 +8,7 @@
 #include "bot.h"
 #include "gameMap.h"
 #include "gameMapDragAndDrop.h"
+#include "turnIndicator.h"
 
 class BattleShipCore : public QObject
 {
@@ -21,12 +22,12 @@ public:
     GameMap *playerHumanMap() const;
     GameMap *playerBotMap() const;
     GameMapDragAndDrop *dragAndDropMap();
+    TurnIndicator *turnIndicator() const;
 
-    void setRandShip(GameMap *map, QVector<Ship *> &ships);
-    bool setShip(GameMap *map, Ship *ship, int x, int y, bool isHor);
+    void setRandShip(GameMap *map, QVector<QSharedPointer<Ship>> &ships);
+    bool setShip(GameMap *map, QSharedPointer<Ship> &ship, int x, int y, bool isHor);
 
 signals:
-    void changeTurn(double angle, QColor color);
     void endGame(QString winner);
 
 private slots:
@@ -51,6 +52,7 @@ private:
     Player *m_pPlayerHuman;
     Bot *m_pPlayerBot;
 
+    TurnIndicator *m_pTurnIndicator;
     GameMapDragAndDrop *m_pDragAndDropMap;
 };
 

@@ -4,7 +4,7 @@ GameMap::GameMap(int width, int height, bool disable)
     : QGraphicsObject (), m_width(width), m_height(height)
 {
     for (int i = 0; i < g_MAP_SIZE; ++i)
-        m_mesh.append(QVector<Cell *>(g_MAP_SIZE, nullptr));
+        m_mesh.push_back(QVector<QSharedPointer<Cell>>(g_MAP_SIZE));
 
     const int dx = m_width / (g_MAP_SIZE + 1);
     const int dy = m_height / (g_MAP_SIZE + 1);
@@ -28,20 +28,13 @@ GameMap::GameMap(int width, int height, bool disable)
                     temp->setAcceptHoverEvents(true);
                     temp->setShowShip(false);
                 }
-                m_mesh[i - 1][j - 1] = temp;                
+                m_mesh[i - 1][j - 1].reset(temp);
             }
         }
     }
     this->setVisible(false);
 }
 
-GameMap::~GameMap()
-{
-    for (int i = 0; i < g_MAP_SIZE; ++i)
-        for (int j = 0; j < g_MAP_SIZE; ++j)
-            if (m_mesh[i][j] != nullptr)
-                delete m_mesh[i][j];
-}
 
 e_Status GameMap::shot(int x, int y)
 {
@@ -66,7 +59,7 @@ e_Status GameMap::shot(int x, int y)
     }
 }
 
-void GameMap::setCellShip(int x, int y, Ship *ship)
+void GameMap::setCellShip(int x, int y, QSharedPointer<Ship> &ship)
 {
     m_mesh[x][y]->m_pShip = ship;
 }
@@ -134,7 +127,7 @@ void GameMap::Cell::setShowShip(bool flag)
 void GameMap::Cell::reset()
 {
     m_status = e_Status::Empty;
-    m_pShip = nullptr;
+    m_pShip.reset();
 }
 
 QRectF GameMap::Cell::boundingRect() const

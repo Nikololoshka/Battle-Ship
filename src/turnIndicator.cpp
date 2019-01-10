@@ -29,6 +29,13 @@ TurnIndicator::TurnIndicator(int width, int height)
     });
 }
 
+void TurnIndicator::reset()
+{
+    m_angle = 0;
+    m_color = Qt::green;
+    update();
+}
+
 QRectF TurnIndicator::boundingRect() const
 {
     return QRectF(0, 0, m_width, m_height);

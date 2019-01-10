@@ -1,5 +1,9 @@
 <RCC>
     <qresource prefix="/">
         <file alias="bg-image.png">background/bg-image.png</file>
+        <file alias="ship1">drag_and_drop_icons/length_ship1.png</file>
+        <file alias="ship2">drag_and_drop_icons/length_ship2.png</file>
+        <file alias="ship3">drag_and_drop_icons/length_ship3.png</file>
+        <file alias="ship4">drag_and_drop_icons/length_ship4.png</file>
     </qresource>
 </RCC>

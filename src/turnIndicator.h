@@ -10,6 +10,7 @@ class TurnIndicator : public QGraphicsObject
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
 public:
     TurnIndicator(int width, int height);
+    void reset();
     QColor color() const;
 
     QRectF boundingRect() const override;

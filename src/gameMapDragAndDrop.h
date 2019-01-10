@@ -11,9 +11,8 @@ class GameMapDragAndDrop : public QGraphicsObject
 {
 public:
     GameMapDragAndDrop(int width, int height);
-    ~GameMapDragAndDrop() override;
 
-    void setShipsOnGameMap(GameMap *map, QVector<Ship *> &ships);
+    void setShipsOnGameMap(GameMap *map, QVector<QSharedPointer<Ship>> &ships);
     void reset();
 
     QRectF boundingRect() const override;
@@ -27,9 +26,10 @@ protected:
 private:
     void setShips();    
     void setNearbyShipStatus(int x, int y);
-    void removeNearbyShipStatus(int x, int y);
+    void removeNearbyShipStatus(int x, int y, const QSharedPointer<Ship> &ship);
+    bool isCorrectPlaceForShip(int x, int y, const QSharedPointer<Ship> &ship) const;
     void clearDropEffect();
-    void rotateShip(int x, int y, Ship *ship);
+    void rotateShip(int x, int y, QSharedPointer<Ship> ship);
 
 private:
     struct MimeDataOfShip : public QMimeData
@@ -37,7 +37,7 @@ private:
         MimeDataOfShip();
         static QString mimeType();
 
-        Ship *ship;
+        QSharedPointer<Ship> ship;
         int dragX;
         int dragY;
     };
@@ -53,7 +53,7 @@ private:
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
         e_Status m_status;
-        Ship *m_pShip;
+        QSharedPointer<Ship> m_pShip;
         bool m_dropEffect;
     protected:
         void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
@@ -74,8 +74,8 @@ private:
     int m_width;
     int m_height;
     bool m_isDropAllowed;
-    QVector<QVector<CellDragAndDrop *>> m_mesh;
-    QVector<Ship *> m_ships;
+    QVector<QVector<QSharedPointer<CellDragAndDrop>>> m_mesh;
+    QVector<QSharedPointer<Ship>> m_ships;
 };
 
 #endif // GAMEMAPDRAGANDDROP_H

@@ -1,7 +1,8 @@
 #include "ship.h"
 
-Ship::Ship(int length)
-    : m_length(length)
+Ship::Ship(int length, Orientation orient)
+    : m_length(length),
+      m_orientation(orient)
 {
     m_body.resize(length);
 }
@@ -24,7 +25,7 @@ void Ship::setCellCoord(int numberCell, int x, int y)
     m_body[numberCell] = {x, y, e_Status::Life};
 }
 
-int Ship::numberCell(int x, int y)
+int Ship::numberCell(int x, int y) const
 {
     for (int i = 0; i < m_body.size(); ++i) {
         if (m_body[i].x == x && m_body[i].y == y)
@@ -57,4 +58,14 @@ bool Ship::isLife() const
 int Ship::length() const
 {
     return m_length;
+}
+
+Ship::Orientation Ship::orientation() const
+{
+    return m_orientation;
+}
+
+void Ship::setOrientation(const Orientation &orientation)
+{
+    m_orientation = orientation;
 }

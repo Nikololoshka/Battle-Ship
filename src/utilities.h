@@ -2,6 +2,7 @@
 #define APPNAMESPACE_H
 
 #include <QtWidgets>
+#include <random>
 
 const int g_MAP_SIZE = 10;
 
@@ -23,5 +24,7 @@ enum class e_Direction {
 };
 
 QFont computeFontForText(QRect rect, int flags, const QString &text, double scale = 0.6);
+int generateRandomNumber(int from, int to);
+
 
 #endif // APPNAMESPACE_H

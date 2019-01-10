@@ -11,10 +11,6 @@ Player::~Player()
 {
     if (m_pGameMapPlayer != nullptr)
         delete m_pGameMapPlayer;
-
-    for (auto &ship : m_shipsPlayer)
-        if (ship != nullptr)
-            delete ship;
 }
 
 void Player::setMap(GameMap *map)
@@ -22,7 +18,7 @@ void Player::setMap(GameMap *map)
     m_pGameMapPlayer = map;
 }
 
-void Player::setShips(QVector<Ship *> ships)
+void Player::setShips(QVector<QSharedPointer<Ship> > ships)
 {
     m_shipsPlayer = ships;
 }
@@ -54,7 +50,7 @@ GameMap *Player::gameMap()
     return m_pGameMapPlayer;
 }
 
-QVector<Ship *> &Player::ships()
+QVector<QSharedPointer<Ship> > &Player::ships()
 {
     return  m_shipsPlayer;
 }

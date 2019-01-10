@@ -9,6 +9,7 @@ BattleShipCore::BattleShipCore(QObject *parent)
     m_pPlayerBot = new Bot(tr("Computer"), this);
 
     m_pDragAndDropMap = new GameMapDragAndDrop(330, 330);
+    m_pTurnIndicator = new TurnIndicator(60, 60);
 
     GameMap *mapHuman = new GameMap(330, 330, true);
     GameMap *mapBot = new GameMap(330, 330);
@@ -40,6 +41,7 @@ void BattleShipCore::resetGame()
     m_turn = false;
     m_pPlayerBot->reset();
     m_pPlayerHuman->reset();
+    m_pTurnIndicator->reset();
 }
 
 GameMap *BattleShipCore::playerHumanMap() const
@@ -57,20 +59,25 @@ GameMapDragAndDrop *BattleShipCore::dragAndDropMap()
     return m_pDragAndDropMap;
 }
 
-void BattleShipCore::setRandShip(GameMap *map, QVector<Ship *> &ships)
+TurnIndicator *BattleShipCore::turnIndicator() const
+{
+    return m_pTurnIndicator;
+}
+
+void BattleShipCore::setRandShip(GameMap *map, QVector<QSharedPointer<Ship> > &ships)
 {
     int x = 0, y = 0, dir = 0;
 
     for (int i = 0; i < 10; i++) {
         do {
-            x = qrand() % g_MAP_SIZE;
-            y = qrand() % g_MAP_SIZE;
-            dir = qrand() % 2;
+            x = generateRandomNumber(0, g_MAP_SIZE - 1);
+            y = generateRandomNumber(0, g_MAP_SIZE - 1);
+            dir = generateRandomNumber(0, 1);
         } while (!setShip(map, ships[i], x, y, dir));
     }
 }
 
-bool BattleShipCore::setShip(GameMap *map, Ship *ship, int x, int y, bool isHor)
+bool BattleShipCore::setShip(GameMap *map, QSharedPointer<Ship> &ship, int x, int y, bool isHor)
 {
 //        for (int i = 0; i < g_MAP_SIZE; ++i) {
 //            QString temp = "";
@@ -97,6 +104,7 @@ bool BattleShipCore::setShip(GameMap *map, Ship *ship, int x, int y, bool isHor)
         }
     }
     if (correct) {
+        ship->setOrientation(isHor ? Ship::Horizontal : Ship::Vertical);
         for (int a = 0, b = 0; a < ship->length() && b < ship->length(); isHor ? a++ : b++) {
             for (int i = -1; i < 2; i++) {
                 for (int j = -1; j < 2; j++) {
@@ -137,14 +145,14 @@ void BattleShipCore::turnHuman(int x, int y)
         }
         // если промазал
         // то стреляет бот
-        emit changeTurn(180, Qt::red);
+        m_pTurnIndicator->change(180, Qt::red);
 
         while (true) {
             switch (m_pPlayerBot->turn(m_pPlayerHuman)) {
             case e_Status::Miss:
                 m_timer.start();
                 m_loop.exec();
-                emit changeTurn(180, Qt::green);
+                m_pTurnIndicator->change(180, Qt::green);
                 m_turn = false;
                 return;
             case e_Status::Hit:
@@ -189,7 +197,6 @@ bool BattleShipCore::winnerChecker()
     if (m_pPlayerHuman->isDead()) {
         m_change = false;
         emit endGame(m_pPlayerBot->name());
-        emit changeTurn(180, Qt::green);
         return true;
     }
     if (m_pPlayerBot->isDead()) {
@@ -279,3 +286,5 @@ void BattleShipCore::setDestroyedAreaImpl(Player *player, int x, int y, e_Direct
 
     } while (find);
 }
+
+

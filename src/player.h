@@ -13,13 +13,13 @@ public:
     virtual ~Player();
 
     void setMap(GameMap *map);
-    void setShips(QVector<Ship *> ships);
+    void setShips(QVector<QSharedPointer<Ship> > ships);
 
     bool isDead() const;
     void reset();
     QString name() const;
     GameMap *gameMap();
-    QVector<Ship *> &ships();
+    QVector<QSharedPointer<Ship>> &ships();
 
 signals:
     void mapClicked(int x, int y);
@@ -27,7 +27,7 @@ signals:
 protected:
     QString m_playerName;
     GameMap *m_pGameMapPlayer;
-    QVector<Ship *> m_shipsPlayer;
+    QVector<QSharedPointer<Ship>> m_shipsPlayer;
 };
 
 #endif // PLAYER_H

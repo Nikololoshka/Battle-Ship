@@ -10,7 +10,7 @@ public:
     static Settings &inst();
     void load();
     void save();
-    QVector<Ship *> standartShips();
+    QVector<QSharedPointer<Ship>> standartShips();
     QRectF sceneSize() const;
     QSize viewSize() const;
     int animationDelay();

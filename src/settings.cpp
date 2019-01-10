@@ -16,13 +16,13 @@ void Settings::save()
 
 }
 
-QVector<Ship *> Settings::standartShips()
+QVector<QSharedPointer<Ship> > Settings::standartShips()
 {
-    QVector<Ship *> result;
     QVector<int> shipsLength = {4, 3, 3, 2, 2, 2, 1, 1, 1, 1};
+    QVector<QSharedPointer<Ship>> result(shipsLength.size());
 
     for (int i = 0; i < shipsLength.size(); ++i)
-        result.push_back(new Ship(shipsLength[i]));
+        result[i] = QSharedPointer<Ship>::create(shipsLength[i]);
 
     return result;
 }
