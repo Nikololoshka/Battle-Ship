@@ -16,8 +16,8 @@ public:
     Bot(QString name, QObject *parent = nullptr);
     e_Status turn(Player *otherPlayer);
     void setDifficulty(e_Difficulty difficulty);
-    int getBotX() const;
-    int getBotY() const;
+    int botX() const;
+    int botY() const;
 
 private:
     e_Status easyDifficulty(Player *otherPlayer);

@@ -52,9 +52,13 @@ private:
         QRectF boundingRect() const override;
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
-        e_Status m_status;
-        QSharedPointer<Ship> m_pShip;
-        bool m_dropEffect;
+        e_Status status() const;
+        void setStatus(const e_Status &status);
+        QSharedPointer<Ship> &ship();
+        void setShip(const QSharedPointer<Ship> &ship);
+        bool dropEffect() const;
+        void setDropEffect(bool dropEffect);
+
     protected:
         void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
         void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
@@ -64,6 +68,9 @@ private:
         void startDrag();
 
     private:
+        e_Status m_status;
+        QSharedPointer<Ship> m_pShip;
+        bool m_dropEffect;
         int m_width;
         int m_height;
         int m_idX;

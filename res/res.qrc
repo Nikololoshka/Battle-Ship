@@ -1,9 +1,12 @@
 <RCC>
-    <qresource prefix="/">
-        <file alias="bg-image.png">background/bg-image.png</file>
-        <file alias="ship1">drag_and_drop_icons/length_ship1.png</file>
-        <file alias="ship2">drag_and_drop_icons/length_ship2.png</file>
-        <file alias="ship3">drag_and_drop_icons/length_ship3.png</file>
-        <file alias="ship4">drag_and_drop_icons/length_ship4.png</file>
+    <qresource prefix="/image">
+        <file alias="bg-image">image/bg-image.png</file>
+        <file alias="ship1">image/length_ship1.png</file>
+        <file alias="ship2">image/length_ship2.png</file>
+        <file alias="ship3">image/length_ship3.png</file>
+        <file alias="ship4">image/length_ship4.png</file>
+    </qresource>
+    <qresource prefix="/translations">
+        <file alias="language_ru">translate/language_ru.qm</file>
     </qresource>
 </RCC>

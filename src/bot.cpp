@@ -16,9 +16,10 @@ e_Status Bot::turn(Player *otherPlayer)
     switch (m_difficulty) {
     case e_Difficulty::Easy:
         return easyDifficulty(otherPlayer);
-    default:
+    case e_Difficulty::Medium:
         return mediumDifficulty(otherPlayer);
     }
+    return e_Status::Impossible;
 }
 
 void Bot::setDifficulty(e_Difficulty difficulty)
@@ -27,12 +28,12 @@ void Bot::setDifficulty(e_Difficulty difficulty)
 }
 
 
-int Bot::getBotX() const
+int Bot::botX() const
 {
     return m_botX;
 }
 
-int Bot::getBotY() const
+int Bot::botY() const
 {
     return m_botY;
 }
@@ -41,7 +42,7 @@ e_Status Bot::easyDifficulty(Player *otherPlayer)
 {
     bool selectCoords = false;
     do {
-        // генерация координат для стрельбы
+        // generation of coordinates for shooting
         m_botX = generateRandomNumber(0, g_MAP_SIZE - 1);
         m_botY = generateRandomNumber(0, g_MAP_SIZE - 1);
 
@@ -58,9 +59,9 @@ e_Status Bot::mediumDifficulty(Player *otherPlayer)
     if (!m_expertMode) {
         bool selectCoords = false;
         do {
-            // генерация координат для стрельбы
-            m_botX = qrand() % g_MAP_SIZE;
-            m_botY = qrand() % g_MAP_SIZE;
+            // generation of coordinates for shooting
+            m_botX = generateRandomNumber(0, g_MAP_SIZE - 1);
+            m_botY = generateRandomNumber(0, g_MAP_SIZE - 1);
 
             if (otherPlayer->gameMap()->isEmptyCell(m_botX, m_botY))
                 selectCoords = true;
@@ -69,7 +70,7 @@ e_Status Bot::mediumDifficulty(Player *otherPlayer)
     } else {
         do {
             m_changeShotDirection = false;
-            // выбор направления стрельбы
+            // depending on the direction of the shoot
             switch (m_shotDirection) {
             case e_Direction::Left:
                 if (m_botX > 0) {
@@ -108,11 +109,12 @@ e_Status Bot::mediumDifficulty(Player *otherPlayer)
                 break;
             }
 
-            // смена направления стрельбы
+            // change the direction of fire
             if (m_changeShotDirection) {
                 m_shotDirection = static_cast<e_Direction>((static_cast<int>(m_shotDirection) + 1) % 4);
                 m_botX = m_primaryX;
                 m_botY = m_primaryY;
+                qDebug() << "Bot: change direction " << static_cast<int>(m_shotDirection) << ": " << m_botX << ", " << m_botY;
             }
         } while (m_changeShotDirection);
     }
@@ -129,23 +131,25 @@ e_Status Bot::mediumDifficulty(Player *otherPlayer)
         }
         break;
     case e_Status::Miss:
-        m_botX = m_primaryX;
-        m_botY = m_primaryY;
-        switch (m_shotDirection) {
-        case e_Direction::Left:
-            m_shotDirection = e_Direction::Right;
-            break;
-        case e_Direction::Right:
-            m_shotDirection = e_Direction::Left;
-            break;
-        case e_Direction::Down:
-            m_shotDirection = e_Direction::Up;
-            break;
-        case e_Direction::Up:
-            m_shotDirection = e_Direction::Down;
-            break;
-        default:
-            break;
+        if (m_expertMode) {
+            m_botX = m_primaryX;
+            m_botY = m_primaryY;
+            switch (m_shotDirection) {
+            case e_Direction::Left:
+                m_shotDirection = e_Direction::Right;
+                break;
+            case e_Direction::Right:
+                m_shotDirection = e_Direction::Left;
+                break;
+            case e_Direction::Down:
+                m_shotDirection = e_Direction::Up;
+                break;
+            case e_Direction::Up:
+                m_shotDirection = e_Direction::Down;
+                break;
+            default:
+                break;
+            }
         }
         break;
     case e_Status::Destroyed:

@@ -31,6 +31,16 @@ void MenuSelectedButton::addOption(const QString &name, Bot::e_Difficulty value)
     m_options.append({name, value});
 }
 
+void MenuSelectedButton::updateTranslate(const QString &name, Bot::e_Difficulty value)
+{
+    for (auto &el : m_options) {
+        if (el.second == value) {
+            el.first = name;
+            break;
+        }
+    }
+}
+
 QRectF MenuSelectedButton::boundingRect() const
 {
     return QRectF(0, 0, m_width, m_height);

@@ -29,6 +29,12 @@ void MenuButton::setSize(double width, double height)
     m_font = computeFontForText(boundingRect().toRect(), Qt::AlignCenter | Qt::TextWordWrap, m_title);
 }
 
+void MenuButton::setText(const QString &title)
+{
+    m_title = title;
+    m_font = computeFontForText(boundingRect().toRect(), Qt::AlignCenter | Qt::TextWordWrap, m_title);
+}
+
 QRectF MenuButton::boundingRect() const
 {
     return QRectF(0, 0, m_width, m_height);

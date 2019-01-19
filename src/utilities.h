@@ -23,7 +23,7 @@ enum class e_Direction {
     None
 };
 
-QFont computeFontForText(QRect rect, int flags, const QString &text, double scale = 0.6);
+QFont computeFontForText(QRect rect, int flags, const QString &text, double scale = 0.65);
 int generateRandomNumber(int from, int to);
 
 

@@ -4,10 +4,9 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    Settings::inst().load();
-    BattleShipWindow w;
-    w.show();
+    QApplication app(argc, argv);
+    BattleShipWindow wgt;
+    wgt.show();
 
-    return a.exec();
+    return app.exec();
 }

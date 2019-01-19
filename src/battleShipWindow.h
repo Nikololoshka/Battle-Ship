@@ -2,6 +2,7 @@
 #define BATTLESHIPWINDOW_H
 
 #include <QtWidgets>
+#include "settingsWindow.h"
 #include "settings.h"
 #include "battleShipView.h"
 
@@ -13,8 +14,18 @@ public:
 
 protected:
     void closeEvent(QCloseEvent *event) override;
+    void changeEvent(QEvent *event) override;
+
+private slots:
+    void aboutBattleShip();
+    void settingWindow();
 
 private:
+    QMenu *m_pMenuGame;
+    QAction *m_pSettingsMenuGame;
+    QAction *m_pAboutMenuGame;
+    QAction *m_pExitMenuGame;
+
     BattleShipView *m_pView;
 };
 

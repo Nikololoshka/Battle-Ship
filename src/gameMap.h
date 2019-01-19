@@ -24,7 +24,7 @@ public:
 signals:
     void clicked(int x, int y);
 
-protected:
+private:
     class Cell : public QGraphicsObject
     {
     public:
@@ -35,8 +35,10 @@ protected:
         QRectF boundingRect() const override;
         void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
-        e_Status m_status;
-        QSharedPointer<Ship> m_pShip;
+        e_Status status() const;
+        void setStatus(const e_Status &status);
+        QSharedPointer<Ship> &ship();
+        void setShip(const QSharedPointer<Ship> &ship);
 
     private:
         void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
@@ -44,7 +46,9 @@ protected:
         void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
         void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
-    protected:
+    private:
+        e_Status m_status;
+        QSharedPointer<Ship> m_pShip;
         int m_width;
         int m_height;
         int m_idX;

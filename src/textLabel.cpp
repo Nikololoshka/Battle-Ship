@@ -24,6 +24,12 @@ void TextLabel::setSize(double width, double height)
     m_font = computeFontForText(boundingRect().toRect(), Qt::AlignCenter, m_text, 0.95);
 }
 
+void TextLabel::setText(const QString &text)
+{
+    m_text = text;
+    m_font = computeFontForText(boundingRect().toRect(), Qt::AlignCenter, m_text, 0.95);
+}
+
 QRectF TextLabel::boundingRect() const
 {
     return QRectF(0, 0, m_width, m_height);

@@ -33,6 +33,9 @@ private slots:
 
     void playerWins(QString winnerName);
 
+protected:
+    void changeEvent(QEvent *event) override;
+
 private:
     QGraphicsRectItem *initMainMenu();
     QGraphicsRectItem *initSinglePlayerMenu();
@@ -44,10 +47,32 @@ private:
     QGraphicsScene *m_pScene;
 
     QGraphicsRectItem *m_pMainMenu;
+    TextLabel *m_pMainMenuTitle;
+    MenuButton *m_pButtonSinglePlayer;
+    MenuDisableButton *m_pButtonMultiPlayer;
+    MenuDisableButton *m_pButtonStatistics;
+    MenuButton *m_pButtonExit;
+
     QGraphicsRectItem *m_pSinglePlayerMenu;
-    QGraphicsRectItem *m_pPlaceRandomlyMenu;
+    TextLabel *m_pSinglePlayerTitle;
+    MenuSelectedButton *m_pButtonSelectDifficulty;
+    MenuButton *m_pButtonRandomPlaceMenu;
+    MenuButton *m_pButtonManualPlaceMenu;
+    MenuButton *m_pButtonSinglePlayerBack;
+
+    QGraphicsRectItem *m_pRandomPlaceMenu;
+    TextLabel *m_pRandomPlaceTitle;
+    MenuButton *m_pButtonStartGameRPMenu;
+    MenuButton *m_pButtonGenerate;
+    MenuButton *m_pButtonRandomPlaceBack;
+
     QGraphicsRectItem *m_pManualPlaceMenu;
+    TextLabel *m_pManualPlaceTitle;
+    MenuButton *m_pButtonStartGameMPMenu;
+    MenuButton *m_pButtonManualPlaceBack;
+
     QGraphicsRectItem *m_pGameMenu;
+    MenuButton *m_pButtonGameMenuBack;
 
     BattleShipCore *m_pBattleShipCore;
 };

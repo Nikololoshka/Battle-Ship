@@ -13,6 +13,7 @@ public:
 
     void setSize(double width, double height);
     void addOption(const QString &name, Bot::e_Difficulty value);
+    void updateTranslate(const QString &name, Bot::e_Difficulty value);
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;

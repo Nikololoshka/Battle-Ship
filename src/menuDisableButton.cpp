@@ -25,6 +25,12 @@ void MenuDisableButton::setSize(double width, double heigth)
     m_font = computeFontForText(boundingRect().toRect(), Qt::AlignCenter | Qt::TextWordWrap, m_title);
 }
 
+void MenuDisableButton::setText(const QString &title)
+{
+    m_title = title;
+    m_font = computeFontForText(boundingRect().toRect(), Qt::AlignCenter | Qt::TextWordWrap, m_title);
+}
+
 QRectF MenuDisableButton::boundingRect() const
 {
     return QRectF(0, 0, m_width, m_height);

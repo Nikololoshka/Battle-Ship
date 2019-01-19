@@ -40,8 +40,8 @@ void GameMapDragAndDrop::setShipsOnGameMap(GameMap *map, QVector<QSharedPointer<
 {
     for (int i = 0; i < g_MAP_SIZE; ++i) {
         for (int j = 0; j < g_MAP_SIZE; ++j) {
-            map->setCellShip(i, j, m_mesh[i][j]->m_pShip);
-            map->setCellStatus(i, j, m_mesh[i][j]->m_status);
+            map->setCellShip(i, j, m_mesh[i][j]->ship());
+            map->setCellStatus(i, j, m_mesh[i][j]->status());
         }
     }
     ships.swap(m_ships);
@@ -107,7 +107,7 @@ void GameMapDragAndDrop::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
         // display "drop effect" where to put the ship
         for (const auto &el : data->ship->body()) {
             if (el.y + dy >= 0 && el.y + dy < g_MAP_SIZE && el.x + dx >= 0 && el.x + dx < g_MAP_SIZE) {
-                m_mesh[el.x + dx][el.y + dy]->m_dropEffect = true;
+                m_mesh[el.x + dx][el.y + dy]->setDropEffect(true);
                 m_mesh[el.x + dx][el.y + dy]->update();
             }
         }
@@ -139,8 +139,8 @@ void GameMapDragAndDrop::dropEvent(QGraphicsSceneDragDropEvent *event)
         }
         index = 0;
         for (auto &el : data->ship->body()) {   // set ship to the new coords
-            m_mesh[el.x + dx][el.y + dy]->m_status = e_Status::Life;
-            m_mesh[el.x + dx][el.y + dy]->m_pShip = data->ship;
+            m_mesh[el.x + dx][el.y + dy]->setStatus(e_Status::Life);
+            m_mesh[el.x + dx][el.y + dy]->setShip(data->ship);
             setNearbyShipStatus(el.x + dx, el.y + dy);
             data->ship->setCellCoord(index, el.x + dx, el.y + dy);
             ++index;
@@ -166,8 +166,8 @@ void GameMapDragAndDrop::setShips()
         m_ships[i]->setOrientation(Ship::Horizontal);
         for (int j = 0; j < m_ships[i]->length(); ++j) {
             m_ships[i]->setCellCoord(j, x, y);
-            m_mesh[x][y]->m_status = e_Status::Life;
-            m_mesh[x][y]->m_pShip = m_ships[i];
+            m_mesh[x][y]->setStatus(e_Status::Life);
+            m_mesh[x][y]->setShip(m_ships[i]);
             setNearbyShipStatus(x, y);
             ++y;
         }
@@ -180,8 +180,8 @@ void GameMapDragAndDrop::setNearbyShipStatus(int x, int y)
         for (int j = -1; j < 2; ++j)
             if (i != 0 || j != 0)
                 if (x + i < g_MAP_SIZE && x + i >= 0 && y + j < g_MAP_SIZE && y + j >= 0)
-                    if (m_mesh[x + i][y + j]->m_status == e_Status::Empty)
-                        m_mesh[x + i][y + j]->m_status = e_Status::NearbyShip;
+                    if (m_mesh[x + i][y + j]->status() == e_Status::Empty)
+                        m_mesh[x + i][y + j]->setStatus(e_Status::NearbyShip);
 }
 
 void GameMapDragAndDrop::removeNearbyShipStatus(int x, int y, const QSharedPointer<Ship> &ship)
@@ -195,7 +195,7 @@ void GameMapDragAndDrop::removeNearbyShipStatus(int x, int y, const QSharedPoint
                         for (int p = -1; p < 2; ++p)  {
                             if (x + i + q < g_MAP_SIZE && x + i + q >= 0 &&
                                     y + j + p < g_MAP_SIZE && y + j + p >= 0) {
-                                if (m_mesh[x + i + q][y + j + p]->m_status == e_Status::Life &&
+                                if (m_mesh[x + i + q][y + j + p]->status() == e_Status::Life &&
                                         ship->numberCell(x + i + q, y + j + p) == -1) {
                                     correct = false;
                                     break;
@@ -206,7 +206,7 @@ void GameMapDragAndDrop::removeNearbyShipStatus(int x, int y, const QSharedPoint
                             break;
                     }
                     if (correct)
-                        m_mesh[x + i][y + j]->m_status = e_Status::Empty;                    
+                        m_mesh[x + i][y + j]->setStatus(e_Status::Empty);
                 }
             }
         }
@@ -216,14 +216,14 @@ void GameMapDragAndDrop::removeNearbyShipStatus(int x, int y, const QSharedPoint
 bool GameMapDragAndDrop::isCorrectPlaceForShip(int x, int y, const QSharedPointer<Ship> &ship) const
 {
     if (x >= 0 && x < g_MAP_SIZE && y >= 0 && y < g_MAP_SIZE) {
-        if (m_mesh[x][y]->m_status == e_Status::Life  && ship->numberCell(x, y) == -1) {
+        if (m_mesh[x][y]->status() == e_Status::Life  && ship->numberCell(x, y) == -1) {
             return false;
         }
-        if (m_mesh[x][y]->m_status == e_Status::NearbyShip) {
+        if (m_mesh[x][y]->status() == e_Status::NearbyShip) {
             for (int i = -1; i < 2; ++i) {
                 for (int j = -1; j < 2; ++j) {
                     if (x + i < g_MAP_SIZE && x + i >= 0 && y + j < g_MAP_SIZE && y + j >= 0) {
-                        if (m_mesh[x + i][y + j]->m_status == e_Status::Life &&
+                        if (m_mesh[x + i][y + j]->status() == e_Status::Life &&
                                 ship->numberCell(x + i, y + j) == -1) {
                             return false;
                         }
@@ -241,7 +241,7 @@ void GameMapDragAndDrop::clearDropEffect()
 {
     for (int i = 0; i < g_MAP_SIZE; ++i) {
         for (int j = 0; j < g_MAP_SIZE; ++j) {
-            m_mesh[i][j]->m_dropEffect = false;
+            m_mesh[i][j]->setDropEffect(false);
             m_mesh[i][j]->update();
         }
     }
@@ -269,8 +269,8 @@ void GameMapDragAndDrop::rotateShip(int x, int y, QSharedPointer<Ship> ship)
         int rotateValue = ship->numberCell(el.x, el.y) - rotatePos;
         el.x -= rotateValue * rotateInvert;
         el.y -= rotateValue * rotateInvert;
-        m_mesh[el.x][el.y]->m_status = e_Status::Life;
-        m_mesh[el.x][el.y]->m_pShip = ship;
+        m_mesh[el.x][el.y]->setStatus(e_Status::Life);
+        m_mesh[el.x][el.y]->setShip(ship);
         setNearbyShipStatus(el.x, el.y);
     }
 
@@ -308,6 +308,36 @@ void GameMapDragAndDrop::CellDragAndDrop::reset()
 {
     m_status = e_Status::Empty;
     m_pShip.reset();
+}
+
+bool GameMapDragAndDrop::CellDragAndDrop::dropEffect() const
+{
+    return m_dropEffect;
+}
+
+void GameMapDragAndDrop::CellDragAndDrop::setDropEffect(bool dropEffect)
+{
+    m_dropEffect = dropEffect;
+}
+
+QSharedPointer<Ship> &GameMapDragAndDrop::CellDragAndDrop::ship()
+{
+    return m_pShip;
+}
+
+void GameMapDragAndDrop::CellDragAndDrop::setShip(const QSharedPointer<Ship> &ship)
+{
+    m_pShip = ship;
+}
+
+e_Status GameMapDragAndDrop::CellDragAndDrop::status() const
+{
+    return m_status;
+}
+
+void GameMapDragAndDrop::CellDragAndDrop::setStatus(const e_Status &status)
+{
+    m_status = status;
 }
 
 QRectF GameMapDragAndDrop::CellDragAndDrop::boundingRect() const
@@ -373,7 +403,7 @@ void GameMapDragAndDrop::CellDragAndDrop::startDrag()
     drag->setMimeData(mimeData);
 
 
-    QPixmap dragIcon(":/ship" + QString::number(m_pShip->length()));
+    QPixmap dragIcon(":/image/ship" + QString::number(m_pShip->length()));
     dragIcon = dragIcon.scaled(m_width * m_pShip->length(), m_height);
 
     // set opacity
@@ -402,3 +432,4 @@ void GameMapDragAndDrop::CellDragAndDrop::startDrag()
 
     drag->exec();
 }
+

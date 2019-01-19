@@ -38,13 +38,13 @@ GameMap::GameMap(int width, int height, bool disable)
 
 e_Status GameMap::shot(int x, int y)
 {
-    switch (m_mesh[x][y]->m_status) {
+    switch (m_mesh[x][y]->status()) {
     case e_Status::Empty:                           // если пусто
     case e_Status::NearbyShip:                      // то промах
         this->setCellStatus(x, y, e_Status::Miss);
         return e_Status::Miss;
     case e_Status::Life:
-        switch(m_mesh[x][y]->m_pShip->shot(x, y)) {
+        switch(m_mesh[x][y]->ship()->shot(x, y)) {
         case e_Status::Hit:                         // если попали
             this->setCellStatus(x, y, e_Status::Hit);
             return  e_Status::Hit;
@@ -61,23 +61,23 @@ e_Status GameMap::shot(int x, int y)
 
 void GameMap::setCellShip(int x, int y, QSharedPointer<Ship> &ship)
 {
-    m_mesh[x][y]->m_pShip = ship;
+    m_mesh[x][y]->setShip(ship);
 }
 
 void GameMap::setCellStatus(int x, int y, e_Status st)
 {
-    m_mesh[x][y]->m_status = st;
+    m_mesh[x][y]->setStatus(st);
     m_mesh[x][y]->update();
 }
 
 e_Status GameMap::cellStatus(int x, int y) const
 {
-    return m_mesh[x][y]->m_status;
+    return m_mesh[x][y]->status();
 }
 
 bool GameMap::isEmptyCell(int x, int y) const
 {
-    switch (m_mesh[x][y]->m_status) {
+    switch (m_mesh[x][y]->status()) {
     case e_Status::Miss:
     case e_Status::Hit:
     case e_Status::Destroyed:
@@ -128,6 +128,26 @@ void GameMap::Cell::reset()
 {
     m_status = e_Status::Empty;
     m_pShip.reset();
+}
+
+QSharedPointer<Ship> &GameMap::Cell::ship()
+{
+    return m_pShip;
+}
+
+void GameMap::Cell::setShip(const QSharedPointer<Ship> &ship)
+{
+    m_pShip = ship;
+}
+
+e_Status GameMap::Cell::status() const
+{
+    return m_status;
+}
+
+void GameMap::Cell::setStatus(const e_Status &status)
+{
+    m_status = status;
 }
 
 QRectF GameMap::Cell::boundingRect() const
@@ -200,4 +220,5 @@ void GameMap::Cell::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
     QGraphicsObject::mouseReleaseEvent(event);
 }
+
 

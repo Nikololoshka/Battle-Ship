@@ -24,7 +24,7 @@ TurnIndicator::TurnIndicator(int width, int height)
         {m_width * 2 / 3.0, m_height / 3.0},
     };
 
-    QObject::connect(&m_directionAnimation, &QVariantAnimation::valueChanged, [this](const QVariant &value){
+    connect(&m_directionAnimation, &QVariantAnimation::valueChanged, [this](const QVariant &value){
         this->setRotation(value.toReal());
     });
 }
@@ -32,6 +32,7 @@ TurnIndicator::TurnIndicator(int width, int height)
 void TurnIndicator::reset()
 {
     m_angle = 0;
+    setRotation(m_angle);
     m_color = Qt::green;
     update();
 }

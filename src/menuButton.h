@@ -11,6 +11,7 @@ public:
     MenuButton(const QString &title);
     MenuButton(const QString &title, double width, double height);
     void setSize(double width, double height);
+    void setText(const QString &title);
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;

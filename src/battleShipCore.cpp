@@ -5,8 +5,8 @@ BattleShipCore::BattleShipCore(QObject *parent)
       m_change(false),
       m_turn(false)
 {
-    m_pPlayerHuman = new Player(tr("User"), this);
-    m_pPlayerBot = new Bot(tr("Computer"), this);
+    m_pPlayerHuman = new Player(Settings::inst().playerName(), this);
+    m_pPlayerBot = new Bot(tr("computer"), this);
 
     m_pDragAndDropMap = new GameMapDragAndDrop(330, 330);
     m_pTurnIndicator = new TurnIndicator(60, 60);
@@ -79,18 +79,6 @@ void BattleShipCore::setRandShip(GameMap *map, QVector<QSharedPointer<Ship> > &s
 
 bool BattleShipCore::setShip(GameMap *map, QSharedPointer<Ship> &ship, int x, int y, bool isHor)
 {
-//        for (int i = 0; i < g_MAP_SIZE; ++i) {
-//            QString temp = "";
-//            for (int j = 0; j < g_MAP_SIZE; ++j) {
-//                if (map->cellStatus(i, j) == e_Status::Life)
-//                    temp.append("#");
-//                else if (map->cellStatus(i, j) == e_Status::NearbyShip)
-//                    temp.append("*");
-//                else
-//                    temp.append("-");
-//            }
-//        }
-
     bool correct = true;
 
     if (isHor ? x + ship->length() >= g_MAP_SIZE : y + ship->length() >= g_MAP_SIZE) {
@@ -127,10 +115,10 @@ bool BattleShipCore::setShip(GameMap *map, QSharedPointer<Ship> &ship, int x, in
 
 void BattleShipCore::turnHuman(int x, int y)
 {
-    if (!m_turn) {    // производится ли ход
+    if (!m_turn) {
         m_turn = true;
         m_change = true;
-        switch(m_pPlayerBot->gameMap()->shot(x, y)) {  // стреляет игрок 1
+        switch(m_pPlayerBot->gameMap()->shot(x, y)) {  // shoots player human
         case e_Status::Impossible:
         case e_Status::Hit:
             m_turn = false;
@@ -143,8 +131,8 @@ void BattleShipCore::turnHuman(int x, int y)
         default:
             break;
         }
-        // если промазал
-        // то стреляет бот
+        // if a human missed
+        // then the bot shoots
         m_pTurnIndicator->change(180, Qt::red);
 
         while (true) {
@@ -161,8 +149,8 @@ void BattleShipCore::turnHuman(int x, int y)
                 break;
             case e_Status::Destroyed:
                 setDestroyedArea(m_pPlayerHuman,
-                                  m_pPlayerBot->getBotX(),
-                                  m_pPlayerBot->getBotY());
+                                  m_pPlayerBot->botX(),
+                                  m_pPlayerBot->botY());
                 if (winnerChecker())
                     return;
                 m_timer.start();

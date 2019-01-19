@@ -9,7 +9,8 @@ class MenuDisableButton : public QGraphicsItem
 public:
     MenuDisableButton(const QString &title);
     MenuDisableButton(const QString &title, double width, double heigth);
-    void setSize(double width, double heigth);
+    void setSize(double width, double heigth);    
+    void setText(const QString &title);
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;

@@ -10,6 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = BattleShip
 TEMPLATE = app
+VERSION = 0.7.3.0
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
@@ -30,7 +31,8 @@ HEADERS += \
     src/turnIndicator.h \
     src/menuSelectedButton.h \
     src/menuDisableButton.h \
-    src/utilities.h
+    src/utilities.h \
+    src/settingsWindow.h
 
 SOURCES += \
     src/battleShipCore.cpp \
@@ -48,7 +50,15 @@ SOURCES += \
     src/turnIndicator.cpp \
     src/menuDisableButton.cpp \
     src/menuSelectedButton.cpp \
-    src/utilities.cpp
+    src/utilities.cpp \
+    src/settingsWindow.cpp
 
 RESOURCES += \
     res/res.qrc
+
+TRANSLATIONS += \
+    res/translate/language_ru.ts
+
+DISTFILES += \
+    res/translate/language_ru.ts
+
