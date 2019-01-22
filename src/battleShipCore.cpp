@@ -8,26 +8,40 @@ BattleShipCore::BattleShipCore(QObject *parent)
     m_pPlayerHuman = new Player(Settings::inst().playerName(), this);
     m_pPlayerBot = new Bot(tr("computer"), this);
 
-    m_pDragAndDropMap = new GameMapDragAndDrop(330, 330);
+    m_pGameMapEditor = QSharedPointer<GameMapEditor>::create(510, 330);
     m_pTurnIndicator = new TurnIndicator(60, 60);
 
-    GameMap *mapHuman = new GameMap(330, 330, true);
-    GameMap *mapBot = new GameMap(330, 330);
+    m_pGameMapEditor->setShips(standartShips());
+
+    QSharedPointer<GameMap> mapHuman = QSharedPointer<GameMap>::create(330, 330, true);
+    QSharedPointer<GameMap> mapBot = QSharedPointer<GameMap>::create(330, 330);
 
     m_pPlayerHuman->setMap(mapHuman);
-    m_pPlayerHuman->setShips(Settings::inst().standartShips());
+    m_pPlayerHuman->setShips(standartShips());
     m_pPlayerBot->setMap(mapBot);
-    m_pPlayerBot->setShips(Settings::inst().standartShips());
+    m_pPlayerBot->setShips(standartShips());
 
     m_timer.setInterval(Settings::inst().animationDelay() + 100);
 
-    connect(mapBot, &GameMap::clicked, this, &BattleShipCore::turnHuman);
+    connect(mapBot.data(), &GameMap::clicked, this, &BattleShipCore::turnHuman);
     connect(&m_timer, &QTimer::timeout, &m_loop, &QEventLoop::quit);
 }
 
-void BattleShipCore::setHumanPlayerManualPlaceMap()
+void BattleShipCore::setShipsFromEditorToPlayer()
 {
-    m_pDragAndDropMap->setShipsOnGameMap(m_pPlayerHuman->gameMap(), m_pPlayerHuman->ships());
+    m_pGameMapEditor->moveShipsOnGameMap(m_pPlayerHuman->gameMap(),
+                                         m_pPlayerHuman->ships());
+}
+
+QVector<QSharedPointer<Ship> > BattleShipCore::standartShips()
+{
+    QVector<int> shipsLength = {4, 3, 3, 2, 2, 2, 1, 1, 1, 1};
+    QVector<QSharedPointer<Ship>> result(shipsLength.size());
+
+    for (int i = 0; i < shipsLength.size(); ++i)
+        result[i] = QSharedPointer<Ship>::create(shipsLength[i]);
+
+    return result;
 }
 
 bool BattleShipCore::isChange() const
@@ -44,27 +58,26 @@ void BattleShipCore::resetGame()
     m_pTurnIndicator->reset();
 }
 
-GameMap *BattleShipCore::playerHumanMap() const
+QSharedPointer<GameMap> BattleShipCore::playerHumanMap() const
 {
     return m_pPlayerHuman->gameMap();
 }
 
-GameMap *BattleShipCore::playerBotMap() const
+QSharedPointer<GameMap> BattleShipCore::playerBotMap() const
 {
     return  m_pPlayerBot->gameMap();
 }
 
-GameMapDragAndDrop *BattleShipCore::dragAndDropMap()
+QSharedPointer<GameMapEditor> BattleShipCore::gameMapEditor()
 {
-    return m_pDragAndDropMap;
+    return m_pGameMapEditor;
 }
-
 TurnIndicator *BattleShipCore::turnIndicator() const
 {
     return m_pTurnIndicator;
 }
 
-void BattleShipCore::setRandShip(GameMap *map, QVector<QSharedPointer<Ship> > &ships)
+void BattleShipCore::setRandShip(QSharedPointer<GameMap> &map, QVector<QSharedPointer<Ship> > &ships)
 {
     int x = 0, y = 0, dir = 0;
 
@@ -77,7 +90,7 @@ void BattleShipCore::setRandShip(GameMap *map, QVector<QSharedPointer<Ship> > &s
     }
 }
 
-bool BattleShipCore::setShip(GameMap *map, QSharedPointer<Ship> &ship, int x, int y, bool isHor)
+bool BattleShipCore::setShip(QSharedPointer<GameMap> &map, QSharedPointer<Ship> &ship, int x, int y, bool isHor)
 {
     bool correct = true;
 
@@ -124,7 +137,7 @@ void BattleShipCore::turnHuman(int x, int y)
             m_turn = false;
             return;
         case e_Status::Destroyed:
-            setDestroyedArea(m_pPlayerBot, x, y);
+            m_pPlayerBot->gameMap()->setDestroyedArea(x, y);
             winnerChecker();
             m_turn = false;
             return;
@@ -148,9 +161,8 @@ void BattleShipCore::turnHuman(int x, int y)
                 m_loop.exec();
                 break;
             case e_Status::Destroyed:
-                setDestroyedArea(m_pPlayerHuman,
-                                  m_pPlayerBot->botX(),
-                                  m_pPlayerBot->botY());
+                m_pPlayerHuman->gameMap()->setDestroyedArea(m_pPlayerBot->botX(),
+                                                            m_pPlayerBot->botY());
                 if (winnerChecker())
                     return;
                 m_timer.start();
@@ -161,12 +173,6 @@ void BattleShipCore::turnHuman(int x, int y)
             }
         }
     }
-}
-
-void BattleShipCore::generateHumanMap()
-{
-    m_pPlayerHuman->reset();
-    setRandShip(m_pPlayerHuman->gameMap(), m_pPlayerHuman->ships());
 }
 
 void BattleShipCore::generateBotMap()
@@ -195,84 +201,5 @@ bool BattleShipCore::winnerChecker()
     return false;
 }
 
-void BattleShipCore::setDestroyedArea(Player *player, int x, int y)
-{
-    e_Direction dir = e_Direction::None;
-    int tempX = x, tempY = y;
-    bool find = false;
-
-    while (true) {
-        setDestroyedAreaImpl(player, x, y, dir);
-        find = false;
-        while (!find) {
-            x = tempX;
-            y = tempY;
-            dir = static_cast<e_Direction>((static_cast<int>(dir) + 1) % 5);
-            switch (dir) {
-            case e_Direction::Right:
-                x++;
-                break;
-            case e_Direction::Left:
-                x--;
-                break;
-            case e_Direction::Up:
-                y--;
-                break;
-            case e_Direction::Down:
-                y++;
-                break;
-            default:
-                return;
-            }
-            if (x >= g_MAP_SIZE || y >= g_MAP_SIZE || x < 0 || y < 0)
-                continue;
-
-            if (player->gameMap()->cellStatus(x, y) == e_Status::Destroyed)
-                find = true;
-        }
-    }
-}
-
-void BattleShipCore::setDestroyedAreaImpl(Player *player, int x, int y, e_Direction dir)
-{
-    bool find;
-    do {
-        find = false;
-
-        for (int i = -1; i < 2; i++) {
-            for (int j = -1; j < 2; j++) {
-                if ((i + x) < g_MAP_SIZE && (i + x) >= 0 &&
-                    (j + y) < g_MAP_SIZE && (j + y) >= 0) {
-                    if (player->gameMap()->cellStatus(x + i, y + j) == e_Status::NearbyShip)
-                        player->gameMap()->setCellStatus(x + i, y + j, e_Status::Miss);
-                    if (player->gameMap()->cellStatus(x + i, y + j) == e_Status::Hit)
-                        player->gameMap()->setCellStatus(x + i, y + j, e_Status::Destroyed);
-                }
-            }
-        }
-        switch (dir) {
-        case e_Direction::Right:
-            x++;
-            break;
-        case e_Direction::Left:
-            x--;
-            break;
-        case e_Direction::Up:
-            y--;
-            break;
-        case e_Direction::Down:
-            y++;
-            break;
-        default:
-            return;
-        }
-        if (x >= g_MAP_SIZE || y >= g_MAP_SIZE || x < 0 || y < 0)
-            continue;
-
-        if (player->gameMap()->cellStatus(x, y) == e_Status::Destroyed)
-            find = true;
-
-    } while (find);
-}
 
 

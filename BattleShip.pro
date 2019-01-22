@@ -10,7 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = BattleShip
 TEMPLATE = app
-VERSION = 0.7.3.0
+VERSION = 0.7.4.0
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
@@ -22,7 +22,6 @@ HEADERS += \
     src/battleShipWindow.h \
     src/bot.h \
     src/gameMap.h \
-    src/gameMapDragAndDrop.h \
     src/menuButton.h \
     src/player.h \
     src/settings.h \
@@ -32,7 +31,8 @@ HEADERS += \
     src/menuSelectedButton.h \
     src/menuDisableButton.h \
     src/utilities.h \
-    src/settingsWindow.h
+    src/settingsWindow.h \
+    src/gameMapEditor.h
 
 SOURCES += \
     src/battleShipCore.cpp \
@@ -40,7 +40,6 @@ SOURCES += \
     src/battleShipWindow.cpp \
     src/bot.cpp \
     src/gameMap.cpp \
-    src/gameMapDragAndDrop.cpp \
     src/main.cpp \
     src/menuButton.cpp \
     src/player.cpp \
@@ -51,7 +50,8 @@ SOURCES += \
     src/menuDisableButton.cpp \
     src/menuSelectedButton.cpp \
     src/utilities.cpp \
-    src/settingsWindow.cpp
+    src/settingsWindow.cpp \
+    src/gameMapEditor.cpp
 
 RESOURCES += \
     res/res.qrc

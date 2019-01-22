@@ -6,17 +6,6 @@ Settings &Settings::inst()
     return single;
 }
 
-QVector<QSharedPointer<Ship> > Settings::standartShips()
-{
-    QVector<int> shipsLength = {4, 3, 3, 2, 2, 2, 1, 1, 1, 1};
-    QVector<QSharedPointer<Ship>> result(shipsLength.size());
-
-    for (int i = 0; i < shipsLength.size(); ++i)
-        result[i] = QSharedPointer<Ship>::create(shipsLength[i]);
-
-    return result;
-}
-
 int Settings::animationDelay()
 {
     return 500;

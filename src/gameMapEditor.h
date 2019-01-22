@@ -1,22 +1,27 @@
-#ifndef GAMEMAPDRAGANDDROP_H
-#define GAMEMAPDRAGANDDROP_H
+#ifndef GAMEMAPDEDITOR_H
+#define GAMEMAPDEDITOR_H
 
 #include <QtWidgets>
-#include "settings.h"
 #include "gameMap.h"
 #include "textLabel.h"
 #include "utilities.h"
 
-class GameMapDragAndDrop : public QGraphicsObject
+class GameMapEditor : public QGraphicsObject
 {
 public:
-    GameMapDragAndDrop(int width, int height);
-
-    void setShipsOnGameMap(GameMap *map, QVector<QSharedPointer<Ship>> &ships);
+    GameMapEditor(int width, int height, const QString &textLayout = "ABCDEFGHIJ");
+    void setLabelText(const QString &text);
+    void moveShipsOnGameMap(QSharedPointer<GameMap> &playerMap, QVector<QSharedPointer<Ship>> &playerShips);
+    bool isReady();
+    void setClearMapMode();
+    void setGenerateRandomMode();
     void reset();
 
+    QVector<QSharedPointer<Ship>> ships() const;
+    void setShips(const QVector<QSharedPointer<Ship>> &ships);
+
     QRectF boundingRect() const override;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;    
 
 protected:
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event) override;
@@ -24,11 +29,16 @@ protected:
     void dropEvent(QGraphicsSceneDragDropEvent *event) override;
 
 private:
-    void setShips();    
+    void setShipsOnClearMap();
+    void setRandomShips();
+    bool setShip(QSharedPointer<Ship> &ship, int x, int y, bool isHor);
+
     void setNearbyShipStatus(int x, int y);
     void removeNearbyShipStatus(int x, int y, const QSharedPointer<Ship> &ship);
-    bool isCorrectPlaceForShip(int x, int y, const QSharedPointer<Ship> &ship) const;
-    void clearDropEffect();
+    bool isCorrectPlaceForShip(int x, int y, const QSharedPointer<Ship> &ship, bool isLeftPartMap) const;
+    bool isCorrectCoords(int x, int y, bool isLeftPartMap) const;
+    bool isLeftMap(int y);
+    void clearDropEffect(int x, int y);
     void rotateShip(int x, int y, QSharedPointer<Ship> ship);
 
 private:
@@ -54,8 +64,10 @@ private:
 
         e_Status status() const;
         void setStatus(const e_Status &status);
+
         QSharedPointer<Ship> &ship();
         void setShip(const QSharedPointer<Ship> &ship);
+
         bool dropEffect() const;
         void setDropEffect(bool dropEffect);
 
@@ -78,11 +90,14 @@ private:
         QPointF m_dragPos;
     };
 
+    const int m_RIGHT_BORDER;
     int m_width;
     int m_height;
     bool m_isDropAllowed;
+    QGraphicsRectItem *m_pClearPlaceMode;
+    QVector<QSharedPointer<TextLabel>> m_textLayout;
     QVector<QVector<QSharedPointer<CellDragAndDrop>>> m_mesh;
     QVector<QSharedPointer<Ship>> m_ships;
 };
 
-#endif // GAMEMAPDRAGANDDROP_H
+#endif // GAMEMAPDEDITOR_H

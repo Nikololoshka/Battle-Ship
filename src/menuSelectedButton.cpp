@@ -5,7 +5,8 @@ MenuSelectedButton::MenuSelectedButton()
       m_width(0),
       m_height(0),
       m_hover(false),
-      m_correctValue(0)
+      m_correctValue(0),
+      m_prefix()
 {
     setAcceptHoverEvents(true);
 }
@@ -41,6 +42,11 @@ void MenuSelectedButton::updateTranslate(const QString &name, Bot::e_Difficulty 
     }
 }
 
+void MenuSelectedButton::setPrefix(const QString &prefix)
+{
+    m_prefix = prefix;
+}
+
 QRectF MenuSelectedButton::boundingRect() const
 {
     return QRectF(0, 0, m_width, m_height);
@@ -66,10 +72,10 @@ void MenuSelectedButton::paint(QPainter *painter, const QStyleOptionGraphicsItem
         if (i == m_correctValue) {
             painter->setFont(computeFontForText(QRectF(0, 0, m_width, m_height * 0.6).toRect(),
                                                 Qt::AlignCenter | Qt::TextWordWrap,
-                                                m_options[i].first));
+                                                m_prefix + ": " + m_options[i].first));
             painter->drawText(QRectF(0, 0, m_width, m_height * 0.6),
                               Qt::AlignCenter | Qt::TextWordWrap,
-                              m_options[i].first);
+                              m_prefix + ": " + m_options[i].first);
             painter->setBrush(Qt::magenta);
         }
         painter->drawEllipse(QPointF((i + 1) * dx, m_height * 0.8), m_height * 0.1, m_height * 0.1);
@@ -102,3 +108,4 @@ void MenuSelectedButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     emit changeValue(m_options[m_correctValue].second);
     QGraphicsObject::mouseReleaseEvent(event);
 }
+

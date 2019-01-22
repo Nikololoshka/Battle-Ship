@@ -16,8 +16,8 @@
 <context>
     <name>BattleShipView</name>
     <message>
-        <location filename="../../src/battleShipView.cpp" line="121"/>
-        <location filename="../../src/battleShipView.cpp" line="180"/>
+        <location filename="../../src/battleShipView.cpp" line="105"/>
+        <location filename="../../src/battleShipView.cpp" line="158"/>
         <source>Exit</source>
         <translation>Выход</translation>
     </message>
@@ -26,17 +26,17 @@
         <translation type="vanished">Вы точно хотите выйти?</translation>
     </message>
     <message>
-        <location filename="../../src/battleShipView.cpp" line="108"/>
+        <location filename="../../src/battleShipView.cpp" line="92"/>
         <source>Win!</source>
         <translation>Победа!</translation>
     </message>
     <message>
-        <location filename="../../src/battleShipView.cpp" line="108"/>
+        <location filename="../../src/battleShipView.cpp" line="92"/>
         <source>Player </source>
         <translation>Игрок </translation>
     </message>
     <message>
-        <location filename="../../src/battleShipView.cpp" line="108"/>
+        <location filename="../../src/battleShipView.cpp" line="92"/>
         <source> is winner!</source>
         <translation> победил!</translation>
     </message>
@@ -45,89 +45,115 @@
         <translation type="vanished">Мосркой бой</translation>
     </message>
     <message>
-        <location filename="../../src/battleShipView.cpp" line="86"/>
+        <location filename="../../src/battleShipView.cpp" line="50"/>
+        <source>Information</source>
+        <translation>Информация</translation>
+    </message>
+    <message>
+        <location filename="../../src/battleShipView.cpp" line="50"/>
+        <source>Not all ships are set up!</source>
+        <translation>Не все корабли раставлены!</translation>
+    </message>
+    <message>
+        <location filename="../../src/battleShipView.cpp" line="79"/>
         <source>Exit to the main menu</source>
         <translation>Вызод в главное меню</translation>
     </message>
     <message>
-        <location filename="../../src/battleShipView.cpp" line="87"/>
+        <location filename="../../src/battleShipView.cpp" line="80"/>
         <source>Are you sure you want to go out?</source>
         <comment>Go to the main menu</comment>
         <translation>Вы точно хотите выйти?</translation>
     </message>
     <message>
-        <location filename="../../src/battleShipView.cpp" line="118"/>
-        <location filename="../../src/battleShipView.cpp" line="124"/>
-        <location filename="../../src/battleShipView.cpp" line="165"/>
-        <location filename="../../src/battleShipView.cpp" line="202"/>
+        <location filename="../../src/battleShipView.cpp" line="102"/>
+        <location filename="../../src/battleShipView.cpp" line="108"/>
+        <location filename="../../src/battleShipView.cpp" line="143"/>
+        <location filename="../../src/battleShipView.cpp" line="180"/>
         <source>Singleplayer</source>
         <translation>Одиночная игра</translation>
     </message>
     <message>
-        <location filename="../../src/battleShipView.cpp" line="119"/>
-        <location filename="../../src/battleShipView.cpp" line="170"/>
+        <location filename="../../src/battleShipView.cpp" line="103"/>
+        <location filename="../../src/battleShipView.cpp" line="148"/>
         <source>Multiplayer</source>
         <translation>Сетевая игра</translation>
     </message>
     <message>
-        <location filename="../../src/battleShipView.cpp" line="120"/>
-        <location filename="../../src/battleShipView.cpp" line="175"/>
+        <location filename="../../src/battleShipView.cpp" line="104"/>
+        <location filename="../../src/battleShipView.cpp" line="153"/>
         <source>Statistics</source>
         <translation>Статистика</translation>
     </message>
     <message>
-        <location filename="../../src/battleShipView.cpp" line="125"/>
-        <location filename="../../src/battleShipView.cpp" line="208"/>
+        <location filename="../../src/battleShipView.cpp" line="109"/>
+        <location filename="../../src/battleShipView.cpp" line="185"/>
+        <source>Start game</source>
+        <translation>Начать игру</translation>
+    </message>
+    <message>
+        <location filename="../../src/battleShipView.cpp" line="110"/>
+        <location filename="../../src/battleShipView.cpp" line="191"/>
+        <source>Diffeculty</source>
+        <translation>Сложность</translation>
+    </message>
+    <message>
+        <location filename="../../src/battleShipView.cpp" line="111"/>
+        <location filename="../../src/battleShipView.cpp" line="192"/>
         <source>Easy</source>
         <translation>Легко</translation>
     </message>
     <message>
-        <location filename="../../src/battleShipView.cpp" line="126"/>
-        <location filename="../../src/battleShipView.cpp" line="209"/>
+        <location filename="../../src/battleShipView.cpp" line="112"/>
+        <location filename="../../src/battleShipView.cpp" line="193"/>
         <source>Medium</source>
         <translation>Средний</translation>
     </message>
     <message>
-        <location filename="../../src/battleShipView.cpp" line="127"/>
-        <location filename="../../src/battleShipView.cpp" line="132"/>
+        <location filename="../../src/battleShipView.cpp" line="113"/>
+        <location filename="../../src/battleShipView.cpp" line="197"/>
+        <source>Clear map</source>
+        <translation>Отчистить карту</translation>
+    </message>
+    <message>
+        <location filename="../../src/battleShipView.cpp" line="114"/>
+        <location filename="../../src/battleShipView.cpp" line="202"/>
+        <source>Generate new map</source>
+        <translation>Сгенерировать случайно</translation>
+    </message>
+    <message>
+        <location filename="../../src/battleShipView.cpp" line="115"/>
+        <location filename="../../src/battleShipView.cpp" line="119"/>
+        <location filename="../../src/battleShipView.cpp" line="120"/>
         <location filename="../../src/battleShipView.cpp" line="213"/>
-        <location filename="../../src/battleShipView.cpp" line="248"/>
+        <location filename="../../src/battleShipView.cpp" line="240"/>
+        <location filename="../../src/battleShipView.cpp" line="245"/>
+        <source>ABCDEFGHIJ</source>
+        <translation>АБВГДЕЖЗИК</translation>
+    </message>
+    <message>
         <source>Random placement</source>
-        <translation>Случайная растановка</translation>
+        <translation type="vanished">Случайная растановка</translation>
     </message>
     <message>
-        <location filename="../../src/battleShipView.cpp" line="128"/>
-        <location filename="../../src/battleShipView.cpp" line="138"/>
-        <location filename="../../src/battleShipView.cpp" line="218"/>
-        <location filename="../../src/battleShipView.cpp" line="286"/>
         <source>Manual placement</source>
-        <translation>Ручная растановка</translation>
+        <translation type="vanished">Ручная растановка</translation>
     </message>
     <message>
-        <location filename="../../src/battleShipView.cpp" line="129"/>
-        <location filename="../../src/battleShipView.cpp" line="135"/>
-        <location filename="../../src/battleShipView.cpp" line="140"/>
-        <location filename="../../src/battleShipView.cpp" line="143"/>
-        <location filename="../../src/battleShipView.cpp" line="223"/>
-        <location filename="../../src/battleShipView.cpp" line="263"/>
-        <location filename="../../src/battleShipView.cpp" line="296"/>
-        <location filename="../../src/battleShipView.cpp" line="323"/>
+        <location filename="../../src/battleShipView.cpp" line="116"/>
+        <location filename="../../src/battleShipView.cpp" line="121"/>
+        <location filename="../../src/battleShipView.cpp" line="207"/>
+        <location filename="../../src/battleShipView.cpp" line="253"/>
         <source>Back</source>
         <translation>Назад</translation>
     </message>
     <message>
-        <location filename="../../src/battleShipView.cpp" line="133"/>
-        <location filename="../../src/battleShipView.cpp" line="139"/>
-        <location filename="../../src/battleShipView.cpp" line="253"/>
-        <location filename="../../src/battleShipView.cpp" line="291"/>
         <source>Start</source>
-        <translation>Начать</translation>
+        <translation type="vanished">Начать</translation>
     </message>
     <message>
-        <location filename="../../src/battleShipView.cpp" line="134"/>
-        <location filename="../../src/battleShipView.cpp" line="258"/>
         <source>Generate</source>
-        <translation>Генерировать</translation>
+        <translation type="vanished">Генерировать</translation>
     </message>
 </context>
 <context>

@@ -14,6 +14,7 @@ public:
     void setSize(double width, double height);
     void addOption(const QString &name, Bot::e_Difficulty value);
     void updateTranslate(const QString &name, Bot::e_Difficulty value);
+    void setPrefix(const QString &prefix);
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
@@ -32,6 +33,7 @@ private:
     double m_height;
     bool m_hover;
     int m_correctValue;
+    QString m_prefix;
     QVector<QPair<QString, Bot::e_Difficulty>> m_options;
 };
 

@@ -9,8 +9,6 @@ class Settings
 public:
     static Settings &inst();
 
-    QVector<QSharedPointer<Ship>> standartShips();
-
     int animationDelay();
     void setAnimationDelay(int animationDelay);
 

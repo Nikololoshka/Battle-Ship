@@ -10,15 +10,13 @@ class Player : public QObject
     Q_OBJECT
 public:
     Player(QString name, QObject *parent = nullptr);
-    virtual ~Player();
-
-    void setMap(GameMap *map);
-    void setShips(QVector<QSharedPointer<Ship> > ships);
+    void setMap(QSharedPointer<GameMap> &map);
+    void setShips(QVector<QSharedPointer<Ship>> ships);
 
     bool isDead() const;
     void reset();
     QString name() const;
-    GameMap *gameMap();
+    QSharedPointer<GameMap> &gameMap();
     QVector<QSharedPointer<Ship>> &ships();
 
 signals:
@@ -26,7 +24,7 @@ signals:
 
 protected:
     QString m_playerName;
-    GameMap *m_pGameMapPlayer;
+    QSharedPointer<GameMap> m_pGameMapPlayer;
     QVector<QSharedPointer<Ship>> m_shipsPlayer;
 };
 

@@ -7,18 +7,12 @@ Player::Player(QString name, QObject *parent)
 {
 }
 
-Player::~Player()
-{
-    if (m_pGameMapPlayer != nullptr)
-        delete m_pGameMapPlayer;
-}
-
-void Player::setMap(GameMap *map)
+void Player::setMap(QSharedPointer<GameMap> &map)
 {
     m_pGameMapPlayer = map;
 }
 
-void Player::setShips(QVector<QSharedPointer<Ship> > ships)
+void Player::setShips(QVector<QSharedPointer<Ship>> ships)
 {
     m_shipsPlayer = ships;
 }
@@ -45,7 +39,7 @@ QString Player::name() const
     return m_playerName;
 }
 
-GameMap *Player::gameMap()
+QSharedPointer<GameMap> &Player::gameMap()
 {
     return m_pGameMapPlayer;
 }

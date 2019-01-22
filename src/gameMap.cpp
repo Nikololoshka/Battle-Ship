@@ -1,10 +1,12 @@
 #include "gameMap.h"
 
-GameMap::GameMap(int width, int height, bool disable)
+GameMap::GameMap(int width, int height, bool disable, const QString &textLayout)
     : QGraphicsObject (), m_width(width), m_height(height)
 {
     for (int i = 0; i < g_MAP_SIZE; ++i)
         m_mesh.push_back(QVector<QSharedPointer<Cell>>(g_MAP_SIZE));
+
+    m_textLayout.resize(g_MAP_SIZE);
 
     const int dx = m_width / (g_MAP_SIZE + 1);
     const int dy = m_height / (g_MAP_SIZE + 1);
@@ -14,8 +16,9 @@ GameMap::GameMap(int width, int height, bool disable)
             if (i == 0 && j == 0) {
                 continue;
             } else if (i == 0) {
-                TextLabel *temp = new TextLabel(dx * j, dy * i, dx, dy, QChar('A' + j - 1));
+                auto temp = new TextLabel(dx * j, dy * i, dx, dy,  textLayout.at(j - 1));
                 temp->setParentItem(this);
+                m_textLayout[j - 1].reset(temp);
             } else if (j == 0) {
                 TextLabel *temp = new TextLabel(dx * j, dy * i, dx, dy, QString::number(i));
                 temp->setParentItem(this);
@@ -32,7 +35,6 @@ GameMap::GameMap(int width, int height, bool disable)
             }
         }
     }
-    this->setVisible(false);
 }
 
 
@@ -94,6 +96,51 @@ void GameMap::resetStatusMesh()
             m_mesh[i][j]->reset();
 }
 
+void GameMap::setDestroyedArea(int x, int y)
+{
+    e_Direction dir = e_Direction::None;
+    int tempX = x, tempY = y;
+    bool find = false;
+
+    while (true) {
+        setDestroyedAreaImpl(x, y, dir);
+        find = false;
+        while (!find) {
+            x = tempX;
+            y = tempY;
+            dir = static_cast<e_Direction>((static_cast<int>(dir) + 1) % 5);
+            switch (dir) {
+            case e_Direction::Right:
+                x++;
+                break;
+            case e_Direction::Left:
+                x--;
+                break;
+            case e_Direction::Up:
+                y--;
+                break;
+            case e_Direction::Down:
+                y++;
+                break;
+            default:
+                return;
+            }
+            if (x >= g_MAP_SIZE || y >= g_MAP_SIZE || x < 0 || y < 0)
+                continue;
+
+            if (cellStatus(x, y) == e_Status::Destroyed)
+                find = true;
+        }
+    }
+}
+
+void GameMap::setLabelText(const QString &textLayout)
+{
+    for (int i = 0; i < m_textLayout.size(); ++i) {
+        m_textLayout[i]->setText(textLayout.at(i));
+    }
+}
+
 QRectF GameMap::boundingRect() const
 {
     return QRectF(0, 0, m_width, m_height);
@@ -103,6 +150,48 @@ void GameMap::paint(QPainter *painter, const QStyleOptionGraphicsItem */*option*
 {
     painter->setPen(Qt::NoPen);
     painter->drawRect(this->boundingRect());
+}
+
+void GameMap::setDestroyedAreaImpl(int x, int y, e_Direction dir)
+{
+    bool find;
+    do {
+        find = false;
+
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                if ((i + x) < g_MAP_SIZE && (i + x) >= 0 &&
+                    (j + y) < g_MAP_SIZE && (j + y) >= 0) {
+                    if (cellStatus(x + i, y + j) == e_Status::NearbyShip)
+                        setCellStatus(x + i, y + j, e_Status::Miss);
+                    if (cellStatus(x + i, y + j) == e_Status::Hit)
+                        setCellStatus(x + i, y + j, e_Status::Destroyed);
+                }
+            }
+        }
+        switch (dir) {
+        case e_Direction::Right:
+            x++;
+            break;
+        case e_Direction::Left:
+            x--;
+            break;
+        case e_Direction::Up:
+            y--;
+            break;
+        case e_Direction::Down:
+            y++;
+            break;
+        default:
+            return;
+        }
+        if (x >= g_MAP_SIZE || y >= g_MAP_SIZE || x < 0 || y < 0)
+            continue;
+
+        if (cellStatus(x, y) == e_Status::Destroyed)
+            find = true;
+
+    } while (find);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
