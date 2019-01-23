@@ -18,6 +18,7 @@ public:
     void setShipsFromEditorToPlayer();
     QVector<QSharedPointer<Ship>> standartShips();
     bool isChange() const;
+    void setTurnInterval(int msec);
     void resetGame();
 
     QSharedPointer<GameMap> playerHumanMap() const;

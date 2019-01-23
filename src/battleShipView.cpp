@@ -107,7 +107,7 @@ void BattleShipView::changeEvent(QEvent *event)
         // singleplayer menu update
         singlePlayerMenu.m_pSinglePlayerTitle->setText(tr("Singleplayer"));
         singlePlayerMenu.m_pButtonStartGame->setText(tr("Start game"));
-        singlePlayerMenu.m_pButtonSelectDifficulty->setPrefix(tr("Diffeculty"));
+        singlePlayerMenu.m_pButtonSelectDifficulty->setPrefix(tr("Difficulty"));
         singlePlayerMenu.m_pButtonSelectDifficulty->updateTranslate(tr("Easy"), Bot::Easy);
         singlePlayerMenu.m_pButtonSelectDifficulty->updateTranslate(tr("Medium"), Bot::Medium);
         singlePlayerMenu.m_pButtonClearMap->setText(tr("Clear map"));
@@ -122,6 +122,16 @@ void BattleShipView::changeEvent(QEvent *event)
     } else {
         QWidget::changeEvent(event);
     }
+}
+
+bool BattleShipView::event(QEvent *event)
+{
+    if (event->type() == SettingsChangeEvent::typeEvent()) {
+        m_pBattleShipCore->setTurnInterval(Settings::inst().animationDelay());
+        m_pBattleShipCore->turnIndicator()->setAnimationDelay(Settings::inst().animationDelay());
+        return true;
+    }
+    return QGraphicsView::event(event);
 }
 
 QGraphicsRectItem *BattleShipView::initMainMenu()
@@ -188,7 +198,7 @@ QGraphicsRectItem *BattleShipView::initSinglePlayerMenu()
     singlePlayerMenu.m_pButtonStartGame->setParentItem(singlePlayerMenu.m_pSinglePlayerMenu);
 
     singlePlayerMenu.m_pButtonSelectDifficulty = new MenuSelectedButton(buttonWidth, buttonHeigth);
-    singlePlayerMenu.m_pButtonSelectDifficulty->setPrefix(tr("Diffeculty"));
+    singlePlayerMenu.m_pButtonSelectDifficulty->setPrefix(tr("Difficulty"));
     singlePlayerMenu.m_pButtonSelectDifficulty->addOption(tr("Easy"), Bot::Easy);
     singlePlayerMenu.m_pButtonSelectDifficulty->addOption(tr("Medium"), Bot::Medium);
     singlePlayerMenu.m_pButtonSelectDifficulty->setPos(width, height += buttonHeigth);

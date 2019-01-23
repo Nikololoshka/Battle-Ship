@@ -49,6 +49,11 @@ bool BattleShipCore::isChange() const
     return m_change;
 }
 
+void BattleShipCore::setTurnInterval(int msec)
+{
+    m_timer.setInterval(msec);
+}
+
 void BattleShipCore::resetGame()
 {
     m_change = false;    

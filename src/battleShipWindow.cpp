@@ -67,6 +67,14 @@ void BattleShipWindow::changeEvent(QEvent *event)
     }
 }
 
+bool BattleShipWindow::event(QEvent *event)
+{
+    if (event->type() == SettingsChangeEvent::typeEvent()) {
+        return QApplication::sendEvent(m_pView, event);
+    }
+    return QMainWindow::event(event);
+}
+
 void BattleShipWindow::aboutBattleShip()
 {
     QMessageBox::information(this, tr("About battle ship"),

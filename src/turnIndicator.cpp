@@ -29,6 +29,12 @@ TurnIndicator::TurnIndicator(int width, int height)
     });
 }
 
+void TurnIndicator::setAnimationDelay(int msec)
+{
+    m_colorAnimation.setDuration(msec / 2);
+    m_directionAnimation.setDuration(msec / 2);
+}
+
 void TurnIndicator::reset()
 {
     m_angle = 0;

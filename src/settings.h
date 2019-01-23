@@ -41,4 +41,11 @@ private:
     int m_animationDelay;
 };
 
+class SettingsChangeEvent : public QEvent
+{
+public:
+    SettingsChangeEvent();
+    static QEvent::Type typeEvent();
+};
+
 #endif // SETTINGS_H

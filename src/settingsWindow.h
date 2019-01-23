@@ -21,9 +21,14 @@ private slots:
 private:
     QGroupBox *m_pGroupGeneralSetting;
     QLabel *m_pLocaleListLabel;
-    QComboBox *m_pLocaleList;
+    QComboBox *m_pLocaleListComboBox;
     QLabel *m_pPlayerNameLabel;
-    QLineEdit *m_pPlayerName;
+    QLineEdit *m_pPlayerNameLineEdit;
+
+    QGroupBox *m_pGroupGameSetting;
+    QLabel *m_pAnimationSpeedLabel;
+    QSlider *m_pAnimationSpeedSlider;
+    QSpinBox *m_pAnimationSpeedSpinBox;
 
     QPushButton *m_pButtonOk;
     QPushButton *m_pButtonApply;

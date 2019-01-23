@@ -8,7 +8,7 @@ Settings &Settings::inst()
 
 int Settings::animationDelay()
 {
-    return 500;
+    return m_animationDelay;
 }
 
 Settings::Settings()
@@ -87,4 +87,17 @@ void Settings::setWindowSize(const QSize &windowSize)
 void Settings::setAnimationDelay(int animationDelay)
 {
     m_animationDelay = animationDelay;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+SettingsChangeEvent::SettingsChangeEvent()
+    : QEvent(static_cast<QEvent::Type>(QEvent::User + 200))
+{
+
+}
+
+QEvent::Type SettingsChangeEvent::typeEvent()
+{
+    return static_cast<QEvent::Type>(QEvent::User + 200);
 }

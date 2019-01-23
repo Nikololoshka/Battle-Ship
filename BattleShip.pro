@@ -10,7 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = BattleShip
 TEMPLATE = app
-VERSION = 0.7.4.0
+VERSION = 0.7.5.0
 
 DEFINES += QT_DEPRECATED_WARNINGS
 

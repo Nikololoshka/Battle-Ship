@@ -32,6 +32,7 @@ private slots:
 
 protected:
     void changeEvent(QEvent *event) override;
+    bool event(QEvent *event) override;
 
 private:
     QGraphicsRectItem *initMainMenu();
